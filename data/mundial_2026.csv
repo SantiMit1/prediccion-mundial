@@ -1,0 +1,105 @@
+date,stage,group,home_team,away_team,home_score,away_score,tournament,city,country,neutral
+2026-06-11,GROUP,A,Mexico,South Africa,,,FIFA World Cup,Mexico City,Mexico,TRUE
+2026-06-11,GROUP,A,South Korea,Czech Republic,,,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-12,GROUP,B,Canada,Bosnia and Herzegovina,,,FIFA World Cup,Toronto,Canada,TRUE
+2026-06-12,GROUP,D,United States,Paraguay,,,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-13,GROUP,B,Qatar,Switzerland,,,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-13,GROUP,C,Brazil,Morocco,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-13,GROUP,C,Haiti,Scotland,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-13,GROUP,D,Australia,Turkey,,,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-14,GROUP,E,Germany,Curacao,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-14,GROUP,F,Netherlands,Japan,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-14,GROUP,E,Ivory Coast,Ecuador,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-14,GROUP,F,Sweden,Tunisia,,,FIFA World Cup,Monterrey,Mexico,TRUE
+2026-06-15,GROUP,H,Spain,Cape Verde,,,FIFA World Cup,Atlanta,USA,TRUE
+2026-06-15,GROUP,G,Belgium,Egypt,,,FIFA World Cup,Seattle,USA,TRUE
+2026-06-15,GROUP,H,Saudi Arabia,Uruguay,,,FIFA World Cup,Miami,USA,TRUE
+2026-06-15,GROUP,G,Iran,New Zealand,,,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-16,GROUP,I,France,Senegal,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-16,GROUP,I,Iraq,Norway,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-16,GROUP,J,Argentina,Algeria,,,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-16,GROUP,J,Austria,Jordan,,,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-17,GROUP,K,Portugal,DR Congo,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-17,GROUP,L,England,Croatia,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-17,GROUP,L,Ghana,Panama,,,FIFA World Cup,Toronto,Canada,TRUE
+2026-06-17,GROUP,K,Uzbekistan,Colombia,,,FIFA World Cup,Mexico City,Mexico,TRUE
+2026-06-18,GROUP,A,Czech Republic,South Africa,,,FIFA World Cup,Atlanta,USA,TRUE
+2026-06-18,GROUP,B,Switzerland,Bosnia and Herzegovina,,,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-18,GROUP,B,Canada,Qatar,,,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-18,GROUP,A,Mexico,South Korea,,,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-19,GROUP,D,United States,Australia,,,FIFA World Cup,Seattle,USA,TRUE
+2026-06-19,GROUP,C,Scotland,Morocco,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-19,GROUP,C,Brazil,Haiti,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-19,GROUP,D,Turkey,Paraguay,,,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-20,GROUP,F,Netherlands,Sweden,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-20,GROUP,E,Germany,Ivory Coast,,,FIFA World Cup,Toronto,Canada,TRUE
+2026-06-20,GROUP,E,Ecuador,Curacao,,,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-20,GROUP,F,Tunisia,Japan,,,FIFA World Cup,Monterrey,Mexico,TRUE
+2026-06-21,GROUP,H,Spain,Saudi Arabia,,,FIFA World Cup,Atlanta,USA,TRUE
+2026-06-21,GROUP,G,Belgium,Iran,,,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-21,GROUP,H,Uruguay,Cape Verde,,,FIFA World Cup,Miami,USA,TRUE
+2026-06-21,GROUP,G,New Zealand,Egypt,,,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-22,GROUP,J,Argentina,Austria,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-22,GROUP,I,France,Iraq,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-22,GROUP,I,Norway,Senegal,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-22,GROUP,J,Jordan,Algeria,,,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-23,GROUP,K,Portugal,Uzbekistan,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-23,GROUP,L,England,Ghana,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-23,GROUP,L,Panama,Croatia,,,FIFA World Cup,Toronto,Canada,TRUE
+2026-06-23,GROUP,K,Colombia,DR Congo,,,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-24,GROUP,B,Switzerland,Canada,,,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-24,GROUP,B,Bosnia and Herzegovina,Qatar,,,FIFA World Cup,Seattle,USA,TRUE
+2026-06-24,GROUP,A,South Africa,South Korea,,,FIFA World Cup,Mexico City,Mexico,TRUE
+2026-06-24,GROUP,A,Czech Republic,Mexico,,,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-25,GROUP,D,United States,Turkey,,,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-25,GROUP,D,Paraguay,Australia,,,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-25,GROUP,C,Morocco,Haiti,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-25,GROUP,C,Scotland,Brazil,,,FIFA World Cup,Miami,USA,TRUE
+2026-06-25,GROUP,E,Germany,Ecuador,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-25,GROUP,E,Ivory Coast,Curacao,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-26,GROUP,F,Netherlands,Tunisia,,,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-26,GROUP,F,Sweden,Japan,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-26,GROUP,G,Belgium,New Zealand,,,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-26,GROUP,G,Egypt,Iran,,,FIFA World Cup,Seattle,USA,TRUE
+2026-06-26,GROUP,I,France,Norway,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-26,GROUP,I,Iraq,Senegal,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-27,GROUP,H,Spain,Uruguay,,,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-27,GROUP,H,Cape Verde,Saudi Arabia,,,FIFA World Cup,Miami,USA,TRUE
+2026-06-27,GROUP,L,England,Panama,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-27,GROUP,L,Croatia,Ghana,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-27,GROUP,J,Jordan,Argentina,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-27,GROUP,J,Algeria,Austria,,,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-27,GROUP,K,Portugal,Colombia,,,FIFA World Cup,Miami,USA,TRUE
+2026-06-27,GROUP,K,Uzbekistan,DR Congo,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-28,R32,,1A,2B,,,FIFA World Cup,,,TRUE
+2026-06-28,R32,,1C,2D,,,FIFA World Cup,,,TRUE
+2026-06-29,R32,,1E,2F,,,FIFA World Cup,,,TRUE
+2026-06-29,R32,,1G,2H,,,FIFA World Cup,,,TRUE
+2026-06-30,R32,,1I,2J,,,FIFA World Cup,,,TRUE
+2026-06-30,R32,,1K,2L,,,FIFA World Cup,,,TRUE
+2026-07-01,R32,,1B,2A,,,FIFA World Cup,,,TRUE
+2026-07-01,R32,,1D,2C,,,FIFA World Cup,,,TRUE
+2026-07-02,R32,,1F,2E,,,FIFA World Cup,,,TRUE
+2026-07-02,R32,,1H,2G,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,1J,2I,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,1L,2K,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,3rd_1,3rd_2,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,3rd_3,3rd_4,,,FIFA World Cup,,,TRUE
+2026-07-04,R32,,3rd_5,3rd_6,,,FIFA World Cup,,,TRUE
+2026-07-04,R32,,3rd_7,3rd_8,,,FIFA World Cup,,,TRUE
+2026-07-05,R16,,W_R32_1,W_R32_2,,,FIFA World Cup,,,TRUE
+2026-07-05,R16,,W_R32_3,W_R32_4,,,FIFA World Cup,,,TRUE
+2026-07-06,R16,,W_R32_5,W_R32_6,,,FIFA World Cup,,,TRUE
+2026-07-06,R16,,W_R32_7,W_R32_8,,,FIFA World Cup,,,TRUE
+2026-07-07,R16,,W_R32_9,W_R32_10,,,FIFA World Cup,,,TRUE
+2026-07-07,R16,,W_R32_11,W_R32_12,,,FIFA World Cup,,,TRUE
+2026-07-08,R16,,W_R32_13,W_R32_14,,,FIFA World Cup,,,TRUE
+2026-07-08,R16,,W_R32_15,W_R32_16,,,FIFA World Cup,,,TRUE
+2026-07-09,QF,,W_R16_1,W_R16_2,,,FIFA World Cup,,,TRUE
+2026-07-10,QF,,W_R16_3,W_R16_4,,,FIFA World Cup,,,TRUE
+2026-07-11,QF,,W_R16_5,W_R16_6,,,FIFA World Cup,,,TRUE
+2026-07-11,QF,,W_R16_7,W_R16_8,,,FIFA World Cup,,,TRUE
+2026-07-14,SF,,W_QF1,W_QF2,,,FIFA World Cup,Dallas,USA,TRUE
+2026-07-15,SF,,W_QF3,W_QF4,,,FIFA World Cup,Atlanta,USA,TRUE
+2026-07-18,3RD,,L_SF1,L_SF2,,,FIFA World Cup,Miami,USA,TRUE
+2026-07-19,FINAL,,W_SF1,W_SF2,,,FIFA World Cup,East Rutherford,USA,TRUE
