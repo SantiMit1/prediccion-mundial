@@ -1,0 +1,906 @@
+{
+    "n_simulations": 1000,
+    "random_seed": 42,
+    "results_csv": "C:\\Users\\santi\\Desktop\\world cup oracle\\results\\world_cup_probabilities.csv",
+    "summary_json": "C:\\Users\\santi\\Desktop\\world cup oracle\\results\\simulation_summary.json",
+    "sample_run": [
+        {
+            "groups": {
+                "Mexico": {
+                    "team": "Mexico",
+                    "group": "A",
+                    "points": 9,
+                    "goals_for": 8,
+                    "goals_against": 4,
+                    "goal_difference": 4,
+                    "matches": 3
+                },
+                "South Africa": {
+                    "team": "South Africa",
+                    "group": "A",
+                    "points": 0,
+                    "goals_for": 4,
+                    "goals_against": 10,
+                    "goal_difference": -6,
+                    "matches": 3
+                },
+                "South Korea": {
+                    "team": "South Korea",
+                    "group": "A",
+                    "points": 3,
+                    "goals_for": 3,
+                    "goals_against": 4,
+                    "goal_difference": -1,
+                    "matches": 3
+                },
+                "Czech Republic": {
+                    "team": "Czech Republic",
+                    "group": "A",
+                    "points": 6,
+                    "goals_for": 8,
+                    "goals_against": 5,
+                    "goal_difference": 3,
+                    "matches": 3
+                },
+                "Canada": {
+                    "team": "Canada",
+                    "group": "B",
+                    "points": 4,
+                    "goals_for": 1,
+                    "goals_against": 2,
+                    "goal_difference": -1,
+                    "matches": 3
+                },
+                "Bosnia and Herzegovina": {
+                    "team": "Bosnia and Herzegovina",
+                    "group": "B",
+                    "points": 4,
+                    "goals_for": 5,
+                    "goals_against": 2,
+                    "goal_difference": 3,
+                    "matches": 3
+                },
+                "United States": {
+                    "team": "United States",
+                    "group": "D",
+                    "points": 1,
+                    "goals_for": 5,
+                    "goals_against": 8,
+                    "goal_difference": -3,
+                    "matches": 3
+                },
+                "Paraguay": {
+                    "team": "Paraguay",
+                    "group": "D",
+                    "points": 2,
+                    "goals_for": 4,
+                    "goals_against": 6,
+                    "goal_difference": -2,
+                    "matches": 3
+                },
+                "Qatar": {
+                    "team": "Qatar",
+                    "group": "B",
+                    "points": 2,
+                    "goals_for": 1,
+                    "goals_against": 5,
+                    "goal_difference": -4,
+                    "matches": 3
+                },
+                "Switzerland": {
+                    "team": "Switzerland",
+                    "group": "B",
+                    "points": 5,
+                    "goals_for": 2,
+                    "goals_against": 0,
+                    "goal_difference": 2,
+                    "matches": 3
+                },
+                "Brazil": {
+                    "team": "Brazil",
+                    "group": "C",
+                    "points": 6,
+                    "goals_for": 5,
+                    "goals_against": 5,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "Morocco": {
+                    "team": "Morocco",
+                    "group": "C",
+                    "points": 6,
+                    "goals_for": 6,
+                    "goals_against": 1,
+                    "goal_difference": 5,
+                    "matches": 3
+                },
+                "Haiti": {
+                    "team": "Haiti",
+                    "group": "C",
+                    "points": 6,
+                    "goals_for": 3,
+                    "goals_against": 3,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "Scotland": {
+                    "team": "Scotland",
+                    "group": "C",
+                    "points": 0,
+                    "goals_for": 1,
+                    "goals_against": 6,
+                    "goal_difference": -5,
+                    "matches": 3
+                },
+                "Australia": {
+                    "team": "Australia",
+                    "group": "D",
+                    "points": 6,
+                    "goals_for": 5,
+                    "goals_against": 2,
+                    "goal_difference": 3,
+                    "matches": 3
+                },
+                "Turkey": {
+                    "team": "Turkey",
+                    "group": "D",
+                    "points": 7,
+                    "goals_for": 4,
+                    "goals_against": 2,
+                    "goal_difference": 2,
+                    "matches": 3
+                },
+                "Germany": {
+                    "team": "Germany",
+                    "group": "E",
+                    "points": 9,
+                    "goals_for": 12,
+                    "goals_against": 2,
+                    "goal_difference": 10,
+                    "matches": 3
+                },
+                "Curacao": {
+                    "team": "Curacao",
+                    "group": "E",
+                    "points": 1,
+                    "goals_for": 1,
+                    "goals_against": 10,
+                    "goal_difference": -9,
+                    "matches": 3
+                },
+                "Netherlands": {
+                    "team": "Netherlands",
+                    "group": "F",
+                    "points": 5,
+                    "goals_for": 3,
+                    "goals_against": 2,
+                    "goal_difference": 1,
+                    "matches": 3
+                },
+                "Japan": {
+                    "team": "Japan",
+                    "group": "F",
+                    "points": 7,
+                    "goals_for": 7,
+                    "goals_against": 0,
+                    "goal_difference": 7,
+                    "matches": 3
+                },
+                "Ivory Coast": {
+                    "team": "Ivory Coast",
+                    "group": "E",
+                    "points": 1,
+                    "goals_for": 3,
+                    "goals_against": 6,
+                    "goal_difference": -3,
+                    "matches": 3
+                },
+                "Ecuador": {
+                    "team": "Ecuador",
+                    "group": "E",
+                    "points": 6,
+                    "goals_for": 5,
+                    "goals_against": 3,
+                    "goal_difference": 2,
+                    "matches": 3
+                },
+                "Sweden": {
+                    "team": "Sweden",
+                    "group": "F",
+                    "points": 0,
+                    "goals_for": 1,
+                    "goals_against": 6,
+                    "goal_difference": -5,
+                    "matches": 3
+                },
+                "Tunisia": {
+                    "team": "Tunisia",
+                    "group": "F",
+                    "points": 4,
+                    "goals_for": 2,
+                    "goals_against": 5,
+                    "goal_difference": -3,
+                    "matches": 3
+                },
+                "Spain": {
+                    "team": "Spain",
+                    "group": "H",
+                    "points": 6,
+                    "goals_for": 9,
+                    "goals_against": 5,
+                    "goal_difference": 4,
+                    "matches": 3
+                },
+                "Cape Verde": {
+                    "team": "Cape Verde",
+                    "group": "H",
+                    "points": 0,
+                    "goals_for": 2,
+                    "goals_against": 11,
+                    "goal_difference": -9,
+                    "matches": 3
+                },
+                "Belgium": {
+                    "team": "Belgium",
+                    "group": "G",
+                    "points": 7,
+                    "goals_for": 6,
+                    "goals_against": 1,
+                    "goal_difference": 5,
+                    "matches": 3
+                },
+                "Egypt": {
+                    "team": "Egypt",
+                    "group": "G",
+                    "points": 0,
+                    "goals_for": 0,
+                    "goals_against": 3,
+                    "goal_difference": -3,
+                    "matches": 3
+                },
+                "Saudi Arabia": {
+                    "team": "Saudi Arabia",
+                    "group": "H",
+                    "points": 6,
+                    "goals_for": 4,
+                    "goals_against": 4,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "Uruguay": {
+                    "team": "Uruguay",
+                    "group": "H",
+                    "points": 6,
+                    "goals_for": 8,
+                    "goals_against": 3,
+                    "goal_difference": 5,
+                    "matches": 3
+                },
+                "Iran": {
+                    "team": "Iran",
+                    "group": "G",
+                    "points": 4,
+                    "goals_for": 3,
+                    "goals_against": 6,
+                    "goal_difference": -3,
+                    "matches": 3
+                },
+                "New Zealand": {
+                    "team": "New Zealand",
+                    "group": "G",
+                    "points": 5,
+                    "goals_for": 2,
+                    "goals_against": 1,
+                    "goal_difference": 1,
+                    "matches": 3
+                },
+                "France": {
+                    "team": "France",
+                    "group": "I",
+                    "points": 9,
+                    "goals_for": 6,
+                    "goals_against": 0,
+                    "goal_difference": 6,
+                    "matches": 3
+                },
+                "Senegal": {
+                    "team": "Senegal",
+                    "group": "I",
+                    "points": 1,
+                    "goals_for": 1,
+                    "goals_against": 7,
+                    "goal_difference": -6,
+                    "matches": 3
+                },
+                "Iraq": {
+                    "team": "Iraq",
+                    "group": "I",
+                    "points": 2,
+                    "goals_for": 1,
+                    "goals_against": 3,
+                    "goal_difference": -2,
+                    "matches": 3
+                },
+                "Norway": {
+                    "team": "Norway",
+                    "group": "I",
+                    "points": 4,
+                    "goals_for": 3,
+                    "goals_against": 1,
+                    "goal_difference": 2,
+                    "matches": 3
+                },
+                "Argentina": {
+                    "team": "Argentina",
+                    "group": "J",
+                    "points": 9,
+                    "goals_for": 6,
+                    "goals_against": 1,
+                    "goal_difference": 5,
+                    "matches": 3
+                },
+                "Algeria": {
+                    "team": "Algeria",
+                    "group": "J",
+                    "points": 6,
+                    "goals_for": 5,
+                    "goals_against": 4,
+                    "goal_difference": 1,
+                    "matches": 3
+                },
+                "Austria": {
+                    "team": "Austria",
+                    "group": "J",
+                    "points": 3,
+                    "goals_for": 5,
+                    "goals_against": 5,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "Jordan": {
+                    "team": "Jordan",
+                    "group": "J",
+                    "points": 0,
+                    "goals_for": 1,
+                    "goals_against": 7,
+                    "goal_difference": -6,
+                    "matches": 3
+                },
+                "Portugal": {
+                    "team": "Portugal",
+                    "group": "K",
+                    "points": 4,
+                    "goals_for": 2,
+                    "goals_against": 2,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "DR Congo": {
+                    "team": "DR Congo",
+                    "group": "K",
+                    "points": 4,
+                    "goals_for": 3,
+                    "goals_against": 3,
+                    "goal_difference": 0,
+                    "matches": 3
+                },
+                "England": {
+                    "team": "England",
+                    "group": "L",
+                    "points": 5,
+                    "goals_for": 7,
+                    "goals_against": 5,
+                    "goal_difference": 2,
+                    "matches": 3
+                },
+                "Croatia": {
+                    "team": "Croatia",
+                    "group": "L",
+                    "points": 7,
+                    "goals_for": 7,
+                    "goals_against": 3,
+                    "goal_difference": 4,
+                    "matches": 3
+                },
+                "Ghana": {
+                    "team": "Ghana",
+                    "group": "L",
+                    "points": 2,
+                    "goals_for": 2,
+                    "goals_against": 4,
+                    "goal_difference": -2,
+                    "matches": 3
+                },
+                "Panama": {
+                    "team": "Panama",
+                    "group": "L",
+                    "points": 1,
+                    "goals_for": 0,
+                    "goals_against": 4,
+                    "goal_difference": -4,
+                    "matches": 3
+                },
+                "Uzbekistan": {
+                    "team": "Uzbekistan",
+                    "group": "K",
+                    "points": 4,
+                    "goals_for": 3,
+                    "goals_against": 4,
+                    "goal_difference": -1,
+                    "matches": 3
+                },
+                "Colombia": {
+                    "team": "Colombia",
+                    "group": "K",
+                    "points": 4,
+                    "goals_for": 6,
+                    "goals_against": 5,
+                    "goal_difference": 1,
+                    "matches": 3
+                }
+            },
+            "champion": "Argentina",
+            "runner_up": "Argentina",
+            "knockout_results": [
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Mexico",
+                    "away_team": "Bosnia and Herzegovina",
+                    "winner": "Bosnia and Herzegovina",
+                    "loser": "Bosnia and Herzegovina",
+                    "home_goals": 2,
+                    "away_goals": 3,
+                    "lambda_home": 2.1914193630218506,
+                    "lambda_away": 0.8422455191612244,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Morocco",
+                    "away_team": "Australia",
+                    "winner": "Morocco",
+                    "loser": "Morocco",
+                    "home_goals": 3,
+                    "away_goals": 1,
+                    "lambda_home": 1.3126699924468994,
+                    "lambda_away": 1.0913758277893066,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Germany",
+                    "away_team": "Netherlands",
+                    "winner": "Netherlands",
+                    "loser": "Netherlands",
+                    "home_goals": 1,
+                    "away_goals": 1,
+                    "lambda_home": 1.4399807453155518,
+                    "lambda_away": 1.0538630485534668,
+                    "decided_by_penalties": true
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Belgium",
+                    "away_team": "Spain",
+                    "winner": "Belgium",
+                    "loser": "Belgium",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.2540513277053833,
+                    "lambda_away": 1.7732608318328857,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "France",
+                    "away_team": "Algeria",
+                    "winner": "Algeria",
+                    "loser": "Algeria",
+                    "home_goals": 1,
+                    "away_goals": 1,
+                    "lambda_home": 1.805057168006897,
+                    "lambda_away": 0.7881330847740173,
+                    "decided_by_penalties": true
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Colombia",
+                    "away_team": "England",
+                    "winner": "Colombia",
+                    "loser": "Colombia",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.2654187679290771,
+                    "lambda_away": 1.4251009225845337,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Switzerland",
+                    "away_team": "Czech Republic",
+                    "winner": "Switzerland",
+                    "loser": "Switzerland",
+                    "home_goals": 1,
+                    "away_goals": 0,
+                    "lambda_home": 1.619536280632019,
+                    "lambda_away": 0.9580383896827698,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Turkey",
+                    "away_team": "Brazil",
+                    "winner": "Brazil",
+                    "loser": "Brazil",
+                    "home_goals": 2,
+                    "away_goals": 4,
+                    "lambda_home": 1.3642363548278809,
+                    "lambda_away": 1.4065393209457397,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Japan",
+                    "away_team": "Ecuador",
+                    "winner": "Japan",
+                    "loser": "Japan",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.2437512874603271,
+                    "lambda_away": 1.0783427953720093,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Uruguay",
+                    "away_team": "New Zealand",
+                    "winner": "Uruguay",
+                    "loser": "Uruguay",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.8478630781173706,
+                    "lambda_away": 0.7209674119949341,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Argentina",
+                    "away_team": "Norway",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 1,
+                    "away_goals": 0,
+                    "lambda_home": 2.0157597064971924,
+                    "lambda_away": 0.7400841116905212,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Croatia",
+                    "away_team": "DR Congo",
+                    "winner": "DR Congo",
+                    "loser": "DR Congo",
+                    "home_goals": 1,
+                    "away_goals": 2,
+                    "lambda_home": 1.8188464641571045,
+                    "lambda_away": 0.8187212944030762,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Saudi Arabia",
+                    "away_team": "Haiti",
+                    "winner": "Saudi Arabia",
+                    "loser": "Saudi Arabia",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.2047808170318604,
+                    "lambda_away": 1.1507405042648315,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Portugal",
+                    "away_team": "Canada",
+                    "winner": "Portugal",
+                    "loser": "Portugal",
+                    "home_goals": 3,
+                    "away_goals": 1,
+                    "lambda_home": 1.3833898305892944,
+                    "lambda_away": 0.8364418148994446,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Iran",
+                    "away_team": "Tunisia",
+                    "winner": "Iran",
+                    "loser": "Iran",
+                    "home_goals": 3,
+                    "away_goals": 1,
+                    "lambda_home": 1.8809958696365356,
+                    "lambda_away": 0.9337353110313416,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R32",
+                    "group": NaN,
+                    "home_team": "Austria",
+                    "away_team": "South Korea",
+                    "winner": "South Korea",
+                    "loser": "South Korea",
+                    "home_goals": 0,
+                    "away_goals": 2,
+                    "lambda_home": 1.267102837562561,
+                    "lambda_away": 1.261656641960144,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Bosnia and Herzegovina",
+                    "away_team": "Morocco",
+                    "winner": "Morocco",
+                    "loser": "Morocco",
+                    "home_goals": 1,
+                    "away_goals": 5,
+                    "lambda_home": 0.7256367206573486,
+                    "lambda_away": 2.146195888519287,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Netherlands",
+                    "away_team": "Belgium",
+                    "winner": "Belgium",
+                    "loser": "Belgium",
+                    "home_goals": 0,
+                    "away_goals": 1,
+                    "lambda_home": 1.1975215673446655,
+                    "lambda_away": 1.5752110481262207,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Algeria",
+                    "away_team": "Colombia",
+                    "winner": "Colombia",
+                    "loser": "Colombia",
+                    "home_goals": 1,
+                    "away_goals": 3,
+                    "lambda_home": 1.2649128437042236,
+                    "lambda_away": 1.6267290115356445,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Switzerland",
+                    "away_team": "Brazil",
+                    "winner": "Brazil",
+                    "loser": "Brazil",
+                    "home_goals": 0,
+                    "away_goals": 1,
+                    "lambda_home": 1.1874290704727173,
+                    "lambda_away": 1.5668578147888184,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Japan",
+                    "away_team": "Uruguay",
+                    "winner": "Japan",
+                    "loser": "Japan",
+                    "home_goals": 2,
+                    "away_goals": 0,
+                    "lambda_home": 1.315093994140625,
+                    "lambda_away": 1.082998514175415,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Argentina",
+                    "away_team": "DR Congo",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 2.218754291534424,
+                    "lambda_away": 0.6626192331314087,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Saudi Arabia",
+                    "away_team": "Portugal",
+                    "winner": "Portugal",
+                    "loser": "Portugal",
+                    "home_goals": 1,
+                    "away_goals": 3,
+                    "lambda_home": 0.7517486214637756,
+                    "lambda_away": 1.9818589687347412,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "R16",
+                    "group": NaN,
+                    "home_team": "Iran",
+                    "away_team": "South Korea",
+                    "winner": "Iran",
+                    "loser": "Iran",
+                    "home_goals": 2,
+                    "away_goals": 1,
+                    "lambda_home": 1.3572064638137817,
+                    "lambda_away": 1.20022451877594,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "QF",
+                    "group": NaN,
+                    "home_team": "Morocco",
+                    "away_team": "Belgium",
+                    "winner": "Morocco",
+                    "loser": "Morocco",
+                    "home_goals": 1,
+                    "away_goals": 0,
+                    "lambda_home": 1.281065583229065,
+                    "lambda_away": 1.1497972011566162,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "QF",
+                    "group": NaN,
+                    "home_team": "Colombia",
+                    "away_team": "Brazil",
+                    "winner": "Brazil",
+                    "loser": "Brazil",
+                    "home_goals": 1,
+                    "away_goals": 2,
+                    "lambda_home": 1.4287142753601074,
+                    "lambda_away": 1.6172771453857422,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "QF",
+                    "group": NaN,
+                    "home_team": "Japan",
+                    "away_team": "Argentina",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 0,
+                    "away_goals": 1,
+                    "lambda_home": 0.8738739490509033,
+                    "lambda_away": 1.7522300481796265,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "QF",
+                    "group": NaN,
+                    "home_team": "Portugal",
+                    "away_team": "Iran",
+                    "winner": "Portugal",
+                    "loser": "Portugal",
+                    "home_goals": 1,
+                    "away_goals": 0,
+                    "lambda_home": 1.6007399559020996,
+                    "lambda_away": 1.0208033323287964,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "SF",
+                    "group": NaN,
+                    "home_team": "Morocco",
+                    "away_team": "Brazil",
+                    "winner": "Morocco",
+                    "loser": "Morocco",
+                    "home_goals": 1,
+                    "away_goals": 0,
+                    "lambda_home": 1.2954603433609009,
+                    "lambda_away": 1.178170084953308,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "SF",
+                    "group": NaN,
+                    "home_team": "Argentina",
+                    "away_team": "Portugal",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 3,
+                    "away_goals": 1,
+                    "lambda_home": 1.6130200624465942,
+                    "lambda_away": 0.8794718384742737,
+                    "decided_by_penalties": false
+                },
+                {
+                    "stage": "3RD",
+                    "group": NaN,
+                    "home_team": "Morocco",
+                    "away_team": "Argentina",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 3,
+                    "away_goals": 3,
+                    "lambda_home": 1.002351999282837,
+                    "lambda_away": 1.6463186740875244,
+                    "decided_by_penalties": true
+                },
+                {
+                    "stage": "FINAL",
+                    "group": NaN,
+                    "home_team": "Morocco",
+                    "away_team": "Argentina",
+                    "winner": "Argentina",
+                    "loser": "Argentina",
+                    "home_goals": 1,
+                    "away_goals": 2,
+                    "lambda_home": 0.9531558752059937,
+                    "lambda_away": 1.7526689767837524,
+                    "decided_by_penalties": false
+                }
+            ]
+        }
+    ],
+    "top_10_champions": [
+        {
+            "team": "Spain",
+            "champion_probability": 0.137
+        },
+        {
+            "team": "Argentina",
+            "champion_probability": 0.129
+        },
+        {
+            "team": "France",
+            "champion_probability": 0.083
+        },
+        {
+            "team": "England",
+            "champion_probability": 0.058
+        },
+        {
+            "team": "Brazil",
+            "champion_probability": 0.053
+        },
+        {
+            "team": "Portugal",
+            "champion_probability": 0.048
+        },
+        {
+            "team": "Germany",
+            "champion_probability": 0.046
+        },
+        {
+            "team": "Ecuador",
+            "champion_probability": 0.046
+        },
+        {
+            "team": "Colombia",
+            "champion_probability": 0.046
+        },
+        {
+            "team": "Mexico",
+            "champion_probability": 0.041
+        }
+    ]
+}
