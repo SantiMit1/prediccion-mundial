@@ -40,10 +40,10 @@ jobs:
 
       - name: Commit and push results
         run: |
-          git add models/ results/
+          git add results/
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "🤖 Auto-generated: Updated model and simulation results"
+            git commit -m "🤖 Auto-generated: Updated simulation results"
             git push
           fi
