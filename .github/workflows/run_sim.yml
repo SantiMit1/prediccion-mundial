@@ -1,0 +1,49 @@
+name: Train Models and Run Monte Carlo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  train-and-simulate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Train goals model
+        run: |
+          echo "=== Starting goals model training ==="
+          python src/train_goals_model.py
+          echo "=== Completed goals model training ==="
+
+      - name: Run Monte Carlo World Cup simulation
+        run: |
+          echo "=== Starting Monte Carlo simulation ==="
+          python monte_carlo_world_cup.py
+          echo "=== Completed Monte Carlo simulation ==="
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push results
+        run: |
+          git add models/ results/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🤖 Auto-generated: Updated model and simulation results"
+            git push
+          fi
