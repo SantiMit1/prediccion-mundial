@@ -6,10 +6,14 @@ on:
 jobs:
   train-and-simulate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -38,6 +42,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Check git status
+        run: |
+          git status
+          git diff --cached
+
       - name: Commit and push results
         run: |
           git add results/
@@ -45,5 +54,6 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🤖 Auto-generated: Updated simulation results"
+            git pull --rebase origin main || git pull --rebase
             git push
           fi

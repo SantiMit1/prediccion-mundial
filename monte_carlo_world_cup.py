@@ -53,7 +53,7 @@ except Exception:  # pragma: no cover - fallback when tqdm is unavailable
 
 
 RANDOM_SEED = 42
-N_SIMULATIONS = 1000
+N_SIMULATIONS = 10
 GROUP_ORDER = list("ABCDEFGHIJKL")
 
 HISTORICAL_PATH = PROJECT_ROOT / "data" / "results_enriched.csv"
@@ -1029,7 +1029,10 @@ def main() -> None:
     print(f"Saved full JSON payload to {WCSIMS_PATH}")
     top_champion = results["summary"]["top_10_champions"][0]
     print(f"Most likely champion: {top_champion['team']} ({top_champion['champion_probability']:.4f})")
-
+    # mostrar todo el csv
+    print("\nFull probability table:")
+    pd.set_option("display.max_rows", None)
+    print(results["probabilities"])
 
 if __name__ == "__main__":
     main()
