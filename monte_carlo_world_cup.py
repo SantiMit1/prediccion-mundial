@@ -53,7 +53,7 @@ except Exception:  # pragma: no cover - fallback when tqdm is unavailable
 
 
 RANDOM_SEED = 42
-N_SIMULATIONS = 10
+N_SIMULATIONS = 1000
 GROUP_ORDER = list("ABCDEFGHIJKL")
 
 HISTORICAL_PATH = PROJECT_ROOT / "data" / "results_enriched.csv"
