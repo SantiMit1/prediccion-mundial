@@ -130,13 +130,4 @@ Al correr el simulador se generan tres archivos en `results/`:
 
 ---
 
-## Instalación y uso
 
-```bash
-git clone https://github.com/SantiMit1/prediccion-mundial.git
-cd prediccion-mundial
-pip install -r requirements.txt
-python monte_carlo_world_cup.py
-```
-
-Los resultados quedan en la carpeta `results/`.
