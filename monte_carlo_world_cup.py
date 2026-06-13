@@ -422,7 +422,8 @@ def simulate_knockout_match(
         "decided_by_penalties": decided_by_penalties,
         "winner": winner,
     }
-    return winner, home_team if winner == home_team else away_team, result
+    loser = away_team if winner == home_team else home_team
+    return winner, loser, result
 
 
 def resolve_group_stage(

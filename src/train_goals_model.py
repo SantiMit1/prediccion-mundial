@@ -58,6 +58,7 @@ EXCLUDED_COLUMNS = {
 TARGET_COLUMNS = ["home_score", "away_score"]
 TOURNAMENT_COLUMN = "tournament"
 NEUTRAL_COLUMN = "neutral"
+DRAW_MARGIN = 0.25
 
 
 def load_dataset(input_path: Path) -> pd.DataFrame:
@@ -137,18 +138,24 @@ def build_model() -> MultiOutputRegressor:
     return MultiOutputRegressor(base_regressor)
 
 
+def classify_result(home_goals: float, away_goals: float, draw_margin: float = 0.0) -> str:
+    """Convert a pair of goal expectations into a 1X2 result label."""
+
+    if abs(home_goals - away_goals) <= draw_margin:
+        return "Draw"
+    if home_goals > away_goals:
+        return "Home Win"
+    return "Away Win"
+
+
 def evaluate_1x2(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
     """Compute 1X2 accuracy from goal predictions."""
 
-    def classify(home_goals: float, away_goals: float) -> str:
-        if home_goals > away_goals:
-            return "Home Win"
-        if home_goals < away_goals:
-            return "Away Win"
-        return "Draw"
-
-    predicted_results = [classify(home, away) for home, away in zip(predictions["pred_home_score"], predictions["pred_away_score"])]
-    actual_results = [classify(home, away) for home, away in zip(truth["home_score"], truth["away_score"])]
+    predicted_results = [
+        classify_result(home, away, draw_margin=DRAW_MARGIN)
+        for home, away in zip(predictions["pred_home_score"], predictions["pred_away_score"])
+    ]
+    actual_results = [classify_result(home, away) for home, away in zip(truth["home_score"], truth["away_score"])]
     correct_predictions = sum(predicted == actual for predicted, actual in zip(predicted_results, actual_results))
     return correct_predictions / len(actual_results)
 
@@ -171,16 +178,12 @@ def save_predictions(test_df: pd.DataFrame, predictions: pd.DataFrame, output_pa
         }
     )
 
-    def classify(home_goals: float, away_goals: float) -> str:
-        if home_goals > away_goals:
-            return "Home Win"
-        if home_goals < away_goals:
-            return "Away Win"
-        return "Draw"
-
-    prediction_frame["real_result"] = [classify(home, away) for home, away in zip(test_df["home_score"], test_df["away_score"])]
+    prediction_frame["real_result"] = [
+        classify_result(home, away) for home, away in zip(test_df["home_score"], test_df["away_score"])
+    ]
     prediction_frame["predicted_result"] = [
-        classify(home, away) for home, away in zip(predictions["pred_home_score"], predictions["pred_away_score"])
+        classify_result(home, away, draw_margin=DRAW_MARGIN)
+        for home, away in zip(predictions["pred_home_score"], predictions["pred_away_score"])
     ]
     prediction_frame.to_csv(output_path, index=False)
 
