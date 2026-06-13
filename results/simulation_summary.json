@@ -1,45 +1,45 @@
 {
-    "n_simulations": 10,
+    "n_simulations": 1000,
     "top_10_champions": [
         {
-            "team": "Portugal",
-            "champion_probability": 0.2
+            "team": "Spain",
+            "champion_probability": 0.171
         },
         {
             "team": "Argentina",
-            "champion_probability": 0.2
+            "champion_probability": 0.17
         },
         {
-            "team": "Spain",
-            "champion_probability": 0.1
+            "team": "France",
+            "champion_probability": 0.067
+        },
+        {
+            "team": "Portugal",
+            "champion_probability": 0.052
         },
         {
             "team": "England",
-            "champion_probability": 0.1
-        },
-        {
-            "team": "Morocco",
-            "champion_probability": 0.1
-        },
-        {
-            "team": "Croatia",
-            "champion_probability": 0.1
-        },
-        {
-            "team": "Ivory Coast",
-            "champion_probability": 0.1
-        },
-        {
-            "team": "Norway",
-            "champion_probability": 0.1
+            "champion_probability": 0.051
         },
         {
             "team": "Brazil",
-            "champion_probability": 0.0
+            "champion_probability": 0.036
+        },
+        {
+            "team": "Colombia",
+            "champion_probability": 0.035
+        },
+        {
+            "team": "Ecuador",
+            "champion_probability": 0.034
+        },
+        {
+            "team": "Germany",
+            "champion_probability": 0.029
         },
         {
             "team": "Mexico",
-            "champion_probability": 0.0
+            "champion_probability": 0.028
         }
     ]
 }
