@@ -10,6 +10,8 @@ from typing import Deque, Sequence
 import joblib
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import poisson
 
 try:
     from src.build_dataset import (
@@ -294,6 +296,35 @@ def classify_result(home_goals: int | float, away_goals: int | float) -> str:
         return "gana el visitante"
     return "empate"
 
+def plot_poisson_distribution(
+    alpha_home: float,
+    alpha_away: float,
+    home_team: str,
+    away_team: str,
+    max_goals: int = 10,
+) -> None:
+    """Poisson distribution plot for the expected goals of both teams."""
+
+    goals = np.arange(0, max_goals + 1)
+    pmf_home = poisson.pmf(goals, alpha_home)
+    pmf_away = poisson.pmf(goals, alpha_away)
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    width = 0.35
+    ax.bar(goals - width / 2, pmf_home, width, label=f"{home_team} (λ={alpha_home:.2f})", color="steelblue", alpha=0.8)
+    ax.bar(goals + width / 2, pmf_away, width, label=f"{away_team} (λ={alpha_away:.2f})", color="tomato", alpha=0.8)
+
+    ax.set_xlabel("Goles")
+    ax.set_ylabel("Probabilidad")
+    ax.set_title("Distribución de Poisson — Goles esperados")
+    ax.set_xticks(goals)
+    ax.legend()
+    ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+    plt.tight_layout()
+    plt.show()
+
 
 def predict_match_from_prompt() -> None:
     """Interactively predict a match using the trained goals model."""
@@ -319,6 +350,8 @@ def predict_match_from_prompt() -> None:
     lambda_home, lambda_away = predict_goals(feature_df)
     alpha_home = max(float(lambda_home.iloc[0]), 0.0)
     alpha_away = max(float(lambda_away.iloc[0]), 0.0)
+
+    plot_poisson_distribution(alpha_home, alpha_away, home_team, away_team)
 
     expected_winner = classify_result(alpha_home, alpha_away)
     rng = np.random.default_rng()
