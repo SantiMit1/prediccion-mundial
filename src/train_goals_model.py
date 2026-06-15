@@ -128,12 +128,16 @@ def build_model() -> MultiOutputRegressor:
 
     base_regressor = XGBRegressor(
         objective="reg:squarederror",
-        n_estimators=300,
-        max_depth=5,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
         random_state=42,
+        n_estimators=650,
+        max_depth=5,
+        learning_rate=0.0146,
+        subsample=0.7088,
+        colsample_bytree=0.9511,
+        min_child_weight=10,
+        reg_alpha=9.8625,
+        reg_lambda=2.5621,
+        gamma=2.8974,
     )
     return MultiOutputRegressor(base_regressor)
 
@@ -230,6 +234,8 @@ def train_and_evaluate() -> None:
     mae_away = mean_absolute_error(y_test["away_score"], predictions["pred_away_score"])
     rmse_home = math.sqrt(mean_squared_error(y_test["home_score"], predictions["pred_home_score"]))
     rmse_away = math.sqrt(mean_squared_error(y_test["away_score"], predictions["pred_away_score"]))
+    mae_general = (mae_home + mae_away) / 2
+    rmse_general = (rmse_home + rmse_away) / 2
     accuracy_1x2 = evaluate_1x2(predictions, y_test)
 
     metrics = {
@@ -237,14 +243,18 @@ def train_and_evaluate() -> None:
         "mae_away": float(mae_away),
         "rmse_home": float(rmse_home),
         "rmse_away": float(rmse_away),
+        "mae_general": float(mae_general),
+        "rmse_general": float(rmse_general),
         "accuracy_1x2": float(accuracy_1x2),
     }
 
     print("Evaluation metrics:")
     print(f"MAE home: {metrics['mae_home']:.4f}")
     print(f"MAE away: {metrics['mae_away']:.4f}")
+    print(f"MAE general: {metrics['mae_general']:.4f}")
     print(f"RMSE home: {metrics['rmse_home']:.4f}")
     print(f"RMSE away: {metrics['rmse_away']:.4f}")
+    print(f"RMSE general: {metrics['rmse_general']:.4f}") 
     print(f"1X2 accuracy: {metrics['accuracy_1x2']:.4f}")
 
     joblib.dump(model, model_path)
