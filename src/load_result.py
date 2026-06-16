@@ -77,6 +77,8 @@ def prompt_date(message: str) -> str:
 	while True:
 		value = input(f"{message} [YYYY-MM-DD]: ").strip()
 		try:
+			if value == "":
+				return datetime.today().strftime("%Y-%m-%d") 
 			parsed = datetime.strptime(value, "%Y-%m-%d")
 		except ValueError:
 			print("Usá el formato YYYY-MM-DD.")
