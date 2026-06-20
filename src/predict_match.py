@@ -1,5 +1,3 @@
-"""Inference helpers for the trained football goals model."""
-
 from __future__ import annotations
 
 from collections import defaultdict, deque
@@ -25,7 +23,7 @@ try:
         normalize_bool,
     )
 except ImportError:
-    from build_dataset import (  # type: ignore[no-redef]
+    from build_dataset import (
         INITIAL_ELO,
         WINDOW_SIZE,
         K_VALUES,
@@ -55,13 +53,11 @@ EXCLUDED_COLUMNS = {
 
 @dataclass
 class TeamState:
-    """Rolling team state reconstructed from historical results."""
-
     elo: float = INITIAL_ELO
-    elo_history: Deque[float] = None  # type: ignore[assignment]
-    win_history: Deque[int] = None  # type: ignore[assignment]
-    goals_for_history: Deque[int] = None  # type: ignore[assignment]
-    goals_against_history: Deque[int] = None  # type: ignore[assignment]
+    elo_history: Deque[float] = None
+    win_history: Deque[int] = None
+    goals_for_history: Deque[int] = None
+    goals_against_history: Deque[int] = None
 
     def __post_init__(self) -> None:
         if self.elo_history is None:
@@ -75,8 +71,6 @@ class TeamState:
 
 
 def load_artifacts(model_path: Path = MODEL_PATH, feature_columns_path: Path = FEATURE_COLUMNS_PATH) -> tuple[object, list[str]]:
-    """Load the persisted model and feature column order."""
-
     if not model_path.exists():
         raise FileNotFoundError(f"Model file not found: {model_path}")
     if not feature_columns_path.exists():
@@ -92,8 +86,6 @@ def load_artifacts(model_path: Path = MODEL_PATH, feature_columns_path: Path = F
 
 
 def preprocess_features(features: pd.DataFrame) -> pd.DataFrame:
-    """Apply the same preprocessing used during model training."""
-
     prepared = features.copy()
 
     if "neutral" in prepared.columns:
@@ -108,14 +100,10 @@ def preprocess_features(features: pd.DataFrame) -> pd.DataFrame:
 
 
 def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]) -> pd.DataFrame:
-    """Align the incoming features to the exact column order used in training."""
-
     return features.reindex(columns=list(feature_columns), fill_value=0)
 
 
 def predict_goals(features: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
-    """Predict expected goals for the home and away teams."""
-
     model, feature_columns = load_artifacts()
     prepared_features = preprocess_features(features)
     aligned_features = align_feature_columns(prepared_features, feature_columns)
@@ -127,8 +115,6 @@ def predict_goals(features: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
 
 
 def load_historical_results(path: Path = HISTORICAL_RESULTS_PATH) -> pd.DataFrame:
-    """Load the enriched history used to reconstruct the current team state."""
-
     if not path.exists():
         raise FileNotFoundError(f"Historical results file not found: {path}")
 
@@ -152,8 +138,6 @@ def update_team_histories(
     away_goals: int,
     team_elo_before: float,
 ) -> None:
-    """Append a historical match to a team's rolling state."""
-
     if team_is_home:
         goals_for = home_goals
         goals_against = away_goals
@@ -170,8 +154,6 @@ def update_team_histories(
 
 
 def reconstruct_state(history: pd.DataFrame) -> dict[str, TeamState]:
-    """Rebuild the Elo and rolling histories from historical results."""
-
     states: dict[str, TeamState] = defaultdict(make_team_state)
 
     for row in history.itertuples(index=False):
@@ -209,8 +191,6 @@ def team_state_to_feature_row(
     neutral: bool,
     states: dict[str, TeamState],
 ) -> pd.DataFrame:
-    """Build the raw feature row expected by ``predict_goals``."""
-
     if home_team not in states:
         states[home_team] = make_team_state()
     if away_team not in states:
@@ -345,7 +325,6 @@ def plot_poisson_distribution(
 
 
 def predict_match_from_prompt() -> None:
-    """Interactively predict a match using the trained goals model."""
 
     print("Predicción interactiva de partido")
     print("Los goles esperados salen del modelo y luego se muestrean con Poisson usando esos lambdas como alpha.")

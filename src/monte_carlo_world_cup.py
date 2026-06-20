@@ -1,16 +1,3 @@
-"""Monte Carlo simulator for the 2026 FIFA World Cup.
-
-The simulator reuses the already trained goals model, reconstructs the team
-state from ``data/results_enriched.csv`` using the exact Elo and rolling
-history logic from ``src/build_dataset.py``, and then simulates the World Cup
-fixture list in ``data/mundial_2026.csv`` many times.
-
-Outputs are written to:
-- ``results/wcsims.json``
-- ``results/world_cup_probabilities.csv``
-- ``results/simulation_summary.json``
-"""
-
 from __future__ import annotations
 
 import json
@@ -42,12 +29,11 @@ from src.build_dataset import (  # noqa: E402
 from src.predict_match import predict_goals  # noqa: E402
 
 
-try:  # pragma: no cover - optional dependency
+try:
     from importlib import import_module
 
-    tqdm = import_module("tqdm").tqdm  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - fallback when tqdm is unavailable
-
+    tqdm = import_module("tqdm").tqdm
+except Exception:
     def tqdm(iterable: Iterable, **_: object) -> Iterable:
         return iterable
 
@@ -69,8 +55,6 @@ GROUP_STAGE_POINTS_DRAW = 1
 
 @dataclass(frozen=True)
 class MatchPrediction:
-    """Prediction outcome for a single simulated match."""
-
     home_team: str
     away_team: str
     lambda_home: float
@@ -85,13 +69,12 @@ class MatchPrediction:
 
 @dataclass
 class TeamState:
-    """Elo and rolling histories for a team."""
 
     elo: float = INITIAL_ELO
-    elo_history: Deque[float] = None  # type: ignore[assignment]
-    win_history: Deque[int] = None  # type: ignore[assignment]
-    goals_for_history: Deque[int] = None  # type: ignore[assignment]
-    goals_against_history: Deque[int] = None  # type: ignore[assignment]
+    elo_history: Deque[float] = None
+    win_history: Deque[int] = None
+    goals_for_history: Deque[int] = None
+    goals_against_history: Deque[int] = None
 
     def __post_init__(self) -> None:
         if self.elo_history is None:
@@ -105,7 +88,6 @@ class TeamState:
 
 
 def load_csv(path: Path) -> pd.DataFrame:
-    """Load a CSV and validate that it exists."""
 
     if not path.exists():
         raise FileNotFoundError(f"Missing file: {path}")
@@ -128,7 +110,6 @@ def make_team_state() -> TeamState:
 
 
 def reconstruct_state(history: pd.DataFrame) -> dict[str, TeamState]:
-    """Rebuild the exact pre-Mundial team state from historical results."""
 
     states: dict[str, TeamState] = defaultdict(make_team_state)
 
@@ -171,7 +152,6 @@ def team_state_to_feature_row(
     row: pd.Series,
     states: dict[str, TeamState],
 ) -> pd.DataFrame:
-    """Build the raw feature row expected by ``predict_goals``."""
 
     home_team = str(row["home_team"])
     away_team = str(row["away_team"])
@@ -208,7 +188,6 @@ def team_state_to_feature_row(
 
 
 def compute_elo_change(current_elo: float, history: Deque[float]) -> float:
-    """Compute the exact five-match Elo delta used in training."""
 
     if len(history) < WINDOW_SIZE:
         return 0.0
@@ -222,7 +201,6 @@ def update_team_histories(
     away_goals: int,
     team_elo_before: float,
 ) -> None:
-    """Append a match to a team's rolling histories using the training rules."""
 
     if team_is_home:
         goals_for = home_goals
@@ -240,13 +218,11 @@ def update_team_histories(
 
 
 def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]) -> pd.DataFrame:
-    """Align the features to the exact training-time column order."""
 
     return features.reindex(columns=list(feature_columns), fill_value=0)
 
 
 def load_model_artifacts() -> tuple[object, list[str]]:
-    """Load the trained goals model and the feature column order."""
 
     model_path = PROJECT_ROOT / "models" / "goals_model.pkl"
     feature_columns_path = PROJECT_ROOT / "models" / "feature_columns.pkl"
@@ -268,13 +244,11 @@ def load_model_artifacts() -> tuple[object, list[str]]:
 
 
 class GoalPredictor:
-    """Wrapper around the persisted goals model for fast repeated inference."""
 
     def __init__(self) -> None:
         self.model, self.feature_columns = load_model_artifacts()
 
     def predict(self, feature_df: pd.DataFrame) -> tuple[float, float]:
-        """Return predicted goal intensities for a single fixture."""
 
         prepared = preprocess_features(feature_df)
         aligned = align_feature_columns(prepared, self.feature_columns)
@@ -283,7 +257,6 @@ class GoalPredictor:
 
 
 def preprocess_features(features: pd.DataFrame) -> pd.DataFrame:
-    """Apply the same feature preprocessing used in training."""
 
     prepared = features.copy()
 
@@ -305,7 +278,6 @@ def simulate_group_match(
     predictor: GoalPredictor,
     rng: np.random.Generator,
 ) -> tuple[int, int, float, float]:
-    """Simulate a single group-stage match and update the team state."""
 
     feature_df = team_state_to_feature_row(row, states)
     lambda_home, lambda_away = predictor.predict(feature_df)
@@ -328,7 +300,6 @@ def update_team_state_after_match(
     home_goals: int,
     away_goals: int,
 ) -> None:
-    """Update Elo and rolling histories after a simulated match."""
 
     home_team = str(row["home_team"])
     away_team = str(row["away_team"])
@@ -365,7 +336,6 @@ def simulate_knockout_match(
     predictor: GoalPredictor,
     rng: np.random.Generator,
 ) -> tuple[str, str, dict[str, object]]:
-    """Simulate a knockout match with extra time and penalties."""
 
     fixture = pd.Series(
         {
@@ -432,7 +402,6 @@ def resolve_group_stage(
     predictor: GoalPredictor,
     rng: np.random.Generator,
 ) -> tuple[dict[str, dict[str, object]], list[dict[str, object]]]:
-    """Simulate the full group stage and return standings plus match logs."""
 
     group_matches = fixtures[fixtures["stage"].fillna("") == "GROUP"].copy()
 
@@ -495,7 +464,6 @@ def resolve_group_stage(
 
 
 def rank_group_teams(standings: dict[str, dict[str, object]], rng: np.random.Generator) -> tuple[dict[str, list[str]], list[str]]:
-    """Rank teams inside each group and return qualifiers and third-place teams."""
 
     groups: dict[str, list[dict[str, object]]] = defaultdict(list)
     for record in standings.values():
@@ -572,7 +540,6 @@ def rank_group_teams(standings: dict[str, dict[str, object]], rng: np.random.Gen
 
 
 def resolve_placeholders(qualifiers: dict[str, list[str]], third_places: list[str]) -> dict[str, str]:
-    """Build the placeholder-to-team mapping used by the knockout bracket."""
 
     mapping: dict[str, str] = {}
     for group_name in GROUP_ORDER:
@@ -586,7 +553,6 @@ def resolve_placeholders(qualifiers: dict[str, list[str]], third_places: list[st
 
 
 def materialize_fixture_value(value: object, mapping: dict[str, str]) -> str:
-    """Resolve a fixture cell or return it unchanged when it is already a team."""
 
     if pd.isna(value):
         return ""
@@ -595,7 +561,6 @@ def materialize_fixture_value(value: object, mapping: dict[str, str]) -> str:
 
 
 def resolve_knockout_fixtures(fixtures: pd.DataFrame, mapping: dict[str, str]) -> pd.DataFrame:
-    """Replace all placeholders in knockout matches using the current mapping."""
 
     resolved = fixtures.copy()
     for column in ["home_team", "away_team"]:
@@ -604,7 +569,6 @@ def resolve_knockout_fixtures(fixtures: pd.DataFrame, mapping: dict[str, str]) -
 
 
 def build_bracket_maps() -> dict[str, list[str]]:
-    """Return the bracket mapping from fixture tags to placeholder keys."""
 
     return {
         "R32": [
@@ -649,7 +613,6 @@ def run_knockout_round(
     rng: np.random.Generator,
     stage_name: str,
 ) -> tuple[pd.DataFrame, dict[str, str], list[dict[str, object]]]:
-    """Simulate a knockout round and return winners/losers placeholders."""
 
     results: list[dict[str, object]] = []
     winner_mapping: dict[str, str] = {}
@@ -710,7 +673,6 @@ def resolve_knockout_bracket(
     rng: np.random.Generator,
     placeholder_map: dict[str, str],
 ) -> tuple[list[dict[str, object]], dict[str, str], dict[str, str]]:
-    """Resolve all knockout rounds from R32 to FINAL."""
 
     all_results: list[dict[str, object]] = []
     winner_placeholders: dict[str, str] = {}
@@ -787,7 +749,6 @@ def resolve_knockout_bracket(
 
 
 def update_stage_output_columns(fixtures: pd.DataFrame, placeholder_map: dict[str, str]) -> pd.DataFrame:
-    """Materialize all placeholders in the original fixture table for reporting."""
 
     output = fixtures.copy()
     output["resolved_home_team"] = output["home_team"].map(lambda value: materialize_fixture_value(value, placeholder_map))
@@ -802,7 +763,6 @@ def make_final_rankings(
     champion: str,
     runner_up: str,
 ) -> dict[str, list[dict[str, object]]]:
-    """Create the output rankings used in the JSON summary."""
 
     group_tables = []
     for team, record in group_standings.items():
@@ -833,7 +793,6 @@ def simulate_world_cup(
     base_states: dict[str, TeamState],
     rng: np.random.Generator,
 ) -> dict[str, object]:
-    """Run a full World Cup simulation and return the tournament outcome."""
 
     states = {
         team: TeamState(
@@ -879,7 +838,6 @@ def simulate_world_cup(
 
 
 def run_monte_carlo(n_simulations: int = N_SIMULATIONS, random_seed: int = RANDOM_SEED) -> dict[str, object]:
-    """Run the tournament simulation ``n_simulations`` times."""
 
     if n_simulations <= 0:
         raise ValueError("n_simulations must be positive")
@@ -1021,7 +979,6 @@ def run_monte_carlo(n_simulations: int = N_SIMULATIONS, random_seed: int = RANDO
 
 
 def main() -> None:
-    """Entry point used by ``python monte_carlo_world_cup.py``."""
 
     results = run_monte_carlo()
     print(f"Saved probability table to {PROBABILITIES_CSV_PATH}")

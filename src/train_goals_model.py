@@ -1,11 +1,3 @@
-"""Train a multi-output goals model from the enriched results dataset.
-
-The script reads ``data/results_enriched.csv``, builds a time-ordered train/test
-split, trains a ``MultiOutputRegressor(XGBRegressor(...))`` model to predict
-home and away goals, evaluates the holdout set, and persists the artifacts
-needed for inference.
-"""
-
 from __future__ import annotations
 
 import json
@@ -43,6 +35,10 @@ REQUIRED_COLUMNS = [
     "home_goals_against_last_5",
     "away_goals_for_last_5",
     "away_goals_against_last_5",
+    "home_attack_strength",
+    "home_defense_strength",
+    "away_attack_strength",
+    "away_defense_strength",
 ]
 
 EXCLUDED_COLUMNS = {
@@ -62,8 +58,6 @@ DRAW_MARGIN = 0.25
 
 
 def load_dataset(input_path: Path) -> pd.DataFrame:
-    """Load and validate the enriched dataset."""
-
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: {input_path}")
 
@@ -82,8 +76,6 @@ def load_dataset(input_path: Path) -> pd.DataFrame:
 
 
 def split_temporally(df: pd.DataFrame, train_ratio: float = 0.8) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split the dataset using the oldest rows for training and the newest for testing."""
-
     if not 0 < train_ratio < 1:
         raise ValueError("train_ratio must be between 0 and 1")
 
@@ -97,12 +89,6 @@ def split_temporally(df: pd.DataFrame, train_ratio: float = 0.8) -> tuple[pd.Dat
 
 
 def preprocess_features(df: pd.DataFrame) -> pd.DataFrame:
-    """Transform raw enriched rows into the feature matrix used for training.
-
-    The transformation matches the requirements: ``neutral`` becomes an integer
-    and ``tournament`` is one-hot encoded with ``pd.get_dummies``.
-    """
-
     features = df.copy()
 
     if NEUTRAL_COLUMN in features.columns:
@@ -117,15 +103,11 @@ def preprocess_features(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]) -> pd.DataFrame:
-    """Align a feature matrix to the exact training column order."""
-
     aligned = features.reindex(columns=list(feature_columns), fill_value=0)
     return aligned
 
 
 def build_model() -> MultiOutputRegressor:
-    """Create the requested multi-output XGBoost regressor."""
-
     base_regressor = XGBRegressor(
         objective="reg:squarederror",
         random_state=42,
@@ -143,8 +125,6 @@ def build_model() -> MultiOutputRegressor:
 
 
 def classify_result(home_goals: float, away_goals: float, draw_margin: float = 0.0) -> str:
-    """Convert a pair of goal expectations into a 1X2 result label."""
-
     if abs(home_goals - away_goals) <= draw_margin:
         return "Draw"
     if home_goals > away_goals:
@@ -153,8 +133,6 @@ def classify_result(home_goals: float, away_goals: float, draw_margin: float = 0
 
 
 def evaluate_1x2(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
-    """Compute 1X2 accuracy from goal predictions."""
-
     predicted_results = [
         classify_result(home, away, draw_margin=DRAW_MARGIN)
         for home, away in zip(predictions["pred_home_score"], predictions["pred_away_score"])
@@ -165,8 +143,6 @@ def evaluate_1x2(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
 
 
 def save_predictions(test_df: pd.DataFrame, predictions: pd.DataFrame, output_path: Path) -> None:
-    """Persist the test predictions in the required CSV format."""
-
     test_df = test_df.reset_index(drop=True)
     predictions = predictions.reset_index(drop=True)
 
@@ -193,8 +169,6 @@ def save_predictions(test_df: pd.DataFrame, predictions: pd.DataFrame, output_pa
 
 
 def train_and_evaluate() -> None:
-    """Train the model, evaluate it, and persist all artifacts."""
-
     project_root = Path(__file__).resolve().parents[1]
     input_path = project_root / "data" / "results_enriched.csv"
     models_dir = project_root / "models"

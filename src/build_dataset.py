@@ -14,11 +14,34 @@ from typing import DefaultDict, Deque, Dict, List, Tuple
 
 import pandas as pd
 
+from dixon_coles import StrengthMap, fit_dixon_coles, get_team_strength
+
 
 INITIAL_ELO = 1500.0
 HOME_ADVANTAGE = 100.0
 WINDOW_SIZE = 5
 PROGRESS_EVERY = 5000
+
+# --- Dixon-Coles refit cadence ---
+# Refitting is a separate, more expensive optimization step (unlike Elo,
+# which updates incrementally after every match with a closed-form
+# formula). Refitting after every single match would be wasteful and slow,
+# so strengths are recalculated periodically using only matches already
+# seen up to that point (no data leakage from the future).
+DIXON_COLES_REFIT_EVERY = 1000
+DIXON_COLES_MIN_MATCHES = 200
+
+# Only matches from the last N years (relative to the match being
+# featurized) are used to fit Dixon-Coles. Two reasons for this:
+#   1. Performance: keeps the buffer size roughly constant instead of
+#      growing for the entire dataset (49k+ matches), so refits near
+#      the end of a long historical dataset don't get progressively
+#      slower.
+#   2. Correctness: a team's current attack/defense strength should
+#      reflect how it plays *now*, not how it played decades ago.
+#      Football has changed enough that very old matches are not
+#      representative of current strength.
+DIXON_COLES_WINDOW_YEARS = 4
 
 K_VALUES = {
     # Mundial
@@ -87,6 +110,10 @@ OUTPUT_COLUMNS = REQUIRED_COLUMNS + [
     "home_goals_against_last_5",
     "away_goals_for_last_5",
     "away_goals_against_last_5",
+    "home_attack_strength",
+    "home_defense_strength",
+    "away_attack_strength",
+    "away_defense_strength",
 ]
 
 
@@ -218,6 +245,13 @@ def build_enriched_dataset(df: pd.DataFrame) -> pd.DataFrame:
     team_goals_against_history: DefaultDict[str, Deque[int]] = defaultdict(
         lambda: deque(maxlen=WINDOW_SIZE))
 
+    # --- Dixon-Coles state ---
+    # `dixon_coles_strengths` holds the strengths currently in effect (fit
+    # using only matches seen so far). `matches_seen_buffer` accumulates
+    # raw results to feed the next periodic refit.
+    dixon_coles_strengths: StrengthMap = {}
+    matches_seen_buffer: List[Dict[str, object]] = []
+
     enriched_rows: List[Dict[str, object]] = []
     total_matches = len(df)
 
@@ -228,6 +262,11 @@ def build_enriched_dataset(df: pd.DataFrame) -> pd.DataFrame:
         away_score = int(row.away_score)
         neutral = normalize_bool(row.neutral)
         tournament = row.tournament
+
+        # Dixon-Coles strengths in effect for this match (computed using
+        # only matches strictly before this point — see refit block below).
+        home_attack, home_defense = get_team_strength(dixon_coles_strengths, home_team)
+        away_attack, away_defense = get_team_strength(dixon_coles_strengths, away_team)
 
         home_elo_before = float(team_elos[home_team])
         away_elo_before = float(team_elos[away_team])
@@ -270,6 +309,10 @@ def build_enriched_dataset(df: pd.DataFrame) -> pd.DataFrame:
                 "home_goals_against_last_5": home_goals_against_last_5,
                 "away_goals_for_last_5": away_goals_for_last_5,
                 "away_goals_against_last_5": away_goals_against_last_5,
+                "home_attack_strength": home_attack,
+                "home_defense_strength": home_defense,
+                "away_attack_strength": away_attack,
+                "away_defense_strength": away_defense,
             }
         )
 
@@ -306,6 +349,52 @@ def build_enriched_dataset(df: pd.DataFrame) -> pd.DataFrame:
             team_goals_for_history=team_goals_for_history,
             team_goals_against_history=team_goals_against_history,
         )
+
+        # This match is now "past" information — safe to use in the next refit.
+        matches_seen_buffer.append(
+            {
+                "date": row.date,
+                "home_team": home_team,
+                "away_team": away_team,
+                "home_score": home_score,
+                "away_score": away_score,
+                "neutral": neutral,
+            }
+        )
+
+        if (
+            index % DIXON_COLES_REFIT_EVERY == 0
+            and len(matches_seen_buffer) >= DIXON_COLES_MIN_MATCHES
+        ):
+            current_date = row.date
+            window_start = current_date - pd.DateOffset(years=DIXON_COLES_WINDOW_YEARS)
+
+            # Drop matches older than the window from the buffer itself —
+            # keeps it from growing for the entire dataset and keeps
+            # refits roughly constant-time regardless of how many total
+            # matches have been processed so far.
+            matches_seen_buffer = [
+                match for match in matches_seen_buffer if match["date"] >= window_start
+            ]
+
+            if len(matches_seen_buffer) >= DIXON_COLES_MIN_MATCHES:
+                buffer_df = pd.DataFrame(matches_seen_buffer)
+                all_teams = pd.unique(
+                    pd.concat([buffer_df["home_team"], buffer_df["away_team"]], ignore_index=True)
+                )
+                dixon_coles_strengths = fit_dixon_coles(buffer_df, list(all_teams))
+                print(
+                    f"Refit Dixon-Coles at match {index:,} using {len(buffer_df):,} matches "
+                    f"from the last {DIXON_COLES_WINDOW_YEARS} years",
+                    flush=True,
+                )
+            else:
+                print(
+                    f"Skipped Dixon-Coles refit at match {index:,}: only "
+                    f"{len(matches_seen_buffer):,} matches in the last "
+                    f"{DIXON_COLES_WINDOW_YEARS} years (need {DIXON_COLES_MIN_MATCHES:,})",
+                    flush=True,
+                )
 
         if index % PROGRESS_EVERY == 0 or index == total_matches:
             print(f"Processed {index:,}/{total_matches:,} matches", flush=True)

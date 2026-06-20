@@ -1,10 +1,3 @@
-"""CLI para cargar manualmente un partido ya jugado.
-
-El script pide por terminal los datos base del partido, agrega una nueva fila a
-``data/results.csv`` y regenera ``data/results_enriched.csv`` usando la misma
-lógica de features que el pipeline de entrenamiento.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
