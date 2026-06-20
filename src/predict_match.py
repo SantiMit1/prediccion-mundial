@@ -303,24 +303,42 @@ def plot_poisson_distribution(
     away_team: str,
     max_goals: int = 10,
 ) -> None:
-    """Poisson distribution plot for the expected goals of both teams."""
-
     goals = np.arange(0, max_goals + 1)
     pmf_home = poisson.pmf(goals, alpha_home)
     pmf_away = poisson.pmf(goals, alpha_away)
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    prob_matrix = np.outer(pmf_home, pmf_away)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
     width = 0.35
-    ax.bar(goals - width / 2, pmf_home, width, label=f"{home_team} (λ={alpha_home:.2f})", color="steelblue", alpha=0.8)
-    ax.bar(goals + width / 2, pmf_away, width, label=f"{away_team} (λ={alpha_away:.2f})", color="tomato", alpha=0.8)
+    ax1.bar(goals - width / 2, pmf_home, width, label=f"{home_team} (λ={alpha_home:.2f})", color="steelblue", alpha=0.8)
+    ax1.bar(goals + width / 2, pmf_away, width, label=f"{away_team} (λ={alpha_away:.2f})", color="tomato", alpha=0.8)
 
-    ax.set_xlabel("Goles")
-    ax.set_ylabel("Probabilidad")
-    ax.set_title("Distribución de Poisson — Goles esperados")
-    ax.set_xticks(goals)
-    ax.legend()
-    ax.grid(axis="y", linestyle="--", alpha=0.5)
+    ax1.set_xlabel("Goles")
+    ax1.set_ylabel("Probabilidad")
+    ax1.set_title("Distribución de Poisson — Goles esperados")
+    ax1.set_xticks(goals)
+    ax1.legend()
+    ax1.grid(axis="y", linestyle="--", alpha=0.5)
+
+    im = ax2.imshow(prob_matrix, cmap="YlOrRd", origin="upper")
+
+    ax2.set_xlabel(f"Goles {away_team}")
+    ax2.set_ylabel(f"Goles {home_team}")
+    ax2.set_title("Matriz de probabilidades — Resultado exacto")
+    ax2.set_xticks(goals)
+    ax2.set_yticks(goals)
+
+    for i in goals:
+        for j in goals:
+            value = prob_matrix[i, j]
+            text_color = "white" if value > prob_matrix.max() * 0.5 else "black"
+            ax2.text(j, i, f"{value * 100:.1f}%", ha="center", va="center",
+                      color=text_color, fontsize=8)
+
+    cbar = fig.colorbar(im, ax=ax2, fraction=0.046, pad=0.04)
+    cbar.set_label("Probabilidad")
 
     plt.tight_layout()
     plt.show()

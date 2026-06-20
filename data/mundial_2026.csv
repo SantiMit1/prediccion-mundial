@@ -7,7 +7,7 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-13,GROUP,C,Brazil,Morocco,,,FIFA World Cup,East Rutherford,USA,TRUE
 2026-06-13,GROUP,C,Haiti,Scotland,,,FIFA World Cup,Boston,USA,TRUE
 2026-06-13,GROUP,D,Australia,Turkey,,,FIFA World Cup,Vancouver,Canada,TRUE
-2026-06-14,GROUP,E,Germany,Curacao,,,FIFA World Cup,Houston,USA,TRUE
+2026-06-14,GROUP,E,Germany,Curaçao,,,FIFA World Cup,Houston,USA,TRUE
 2026-06-14,GROUP,F,Netherlands,Japan,,,FIFA World Cup,Dallas,USA,TRUE
 2026-06-14,GROUP,E,Ivory Coast,Ecuador,,,FIFA World Cup,Philadelphia,USA,TRUE
 2026-06-14,GROUP,F,Sweden,Tunisia,,,FIFA World Cup,Monterrey,Mexico,TRUE
@@ -33,7 +33,7 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-19,GROUP,D,Turkey,Paraguay,,,FIFA World Cup,San Francisco,USA,TRUE
 2026-06-20,GROUP,F,Netherlands,Sweden,,,FIFA World Cup,Houston,USA,TRUE
 2026-06-20,GROUP,E,Germany,Ivory Coast,,,FIFA World Cup,Toronto,Canada,TRUE
-2026-06-20,GROUP,E,Ecuador,Curacao,,,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-20,GROUP,E,Ecuador,Curaçao,,,FIFA World Cup,Kansas City,USA,TRUE
 2026-06-20,GROUP,F,Tunisia,Japan,,,FIFA World Cup,Monterrey,Mexico,TRUE
 2026-06-21,GROUP,H,Spain,Saudi Arabia,,,FIFA World Cup,Atlanta,USA,TRUE
 2026-06-21,GROUP,G,Belgium,Iran,,,FIFA World Cup,Los Angeles,USA,TRUE
@@ -56,7 +56,7 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-25,GROUP,C,Morocco,Haiti,,,FIFA World Cup,Boston,USA,TRUE
 2026-06-25,GROUP,C,Scotland,Brazil,,,FIFA World Cup,Miami,USA,TRUE
 2026-06-25,GROUP,E,Germany,Ecuador,,,FIFA World Cup,East Rutherford,USA,TRUE
-2026-06-25,GROUP,E,Ivory Coast,Curacao,,,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-25,GROUP,E,Ivory Coast,Curaçao,,,FIFA World Cup,Philadelphia,USA,TRUE
 2026-06-26,GROUP,F,Netherlands,Tunisia,,,FIFA World Cup,Kansas City,USA,TRUE
 2026-06-26,GROUP,F,Sweden,Japan,,,FIFA World Cup,Dallas,USA,TRUE
 2026-06-26,GROUP,G,Belgium,New Zealand,,,FIFA World Cup,Vancouver,Canada,TRUE
