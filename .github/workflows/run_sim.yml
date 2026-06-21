@@ -35,7 +35,7 @@ jobs:
       - name: Run Monte Carlo World Cup simulation
         run: |
           echo "=== Starting Monte Carlo simulation ==="
-          python monte_carlo_world_cup.py
+          python src/monte_carlo_world_cup.py
           echo "=== Completed Monte Carlo simulation ==="
 
       - name: Configure git
