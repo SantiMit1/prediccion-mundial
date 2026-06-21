@@ -282,8 +282,14 @@ def simulate_group_match(
     feature_df = team_state_to_feature_row(row, states)
     lambda_home, lambda_away = predictor.predict(feature_df)
 
-    home_goals = int(rng.poisson(lambda_home))
-    away_goals = int(rng.poisson(lambda_away))
+    known_home = row.get("home_score")
+    known_away = row.get("away_score")
+    if pd.notna(known_home) and pd.notna(known_away):
+        home_goals = int(known_home)
+        away_goals = int(known_away)
+    else:
+        home_goals = int(rng.poisson(lambda_home))
+        away_goals = int(rng.poisson(lambda_away))
 
     update_team_state_after_match(
         row=row,
