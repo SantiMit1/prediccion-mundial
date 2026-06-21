@@ -469,12 +469,153 @@ def resolve_group_stage(
     return standings, match_logs
 
 
-def rank_group_teams(standings: dict[str, dict[str, object]], rng: np.random.Generator) -> tuple[dict[str, list[str]], list[str]]:
+def _team_elo(record: dict[str, object], states: dict[str, TeamState]) -> float:
+
+    state = states.get(str(record["team"]))
+    return float(state.elo) if state is not None else 0.0
+
+
+def _shuffle_equal_blocks(
+    ordered: list[dict[str, object]],
+    key_func,
+    rng: np.random.Generator,
+) -> list[dict[str, object]]:
+    """Randomly permute teams that remain perfectly equal under ``key_func``."""
+
+    index = 0
+    while index < len(ordered):
+        tie_end = index + 1
+        while tie_end < len(ordered) and key_func(ordered[tie_end]) == key_func(ordered[index]):
+            tie_end += 1
+        if tie_end - index > 1:
+            block = ordered[index:tie_end]
+            order = list(range(len(block)))
+            rng.shuffle(order)
+            ordered[index:tie_end] = [block[i] for i in order]
+        index = tie_end
+    return ordered
+
+
+def _resolve_overall_then_random(
+    block: list[dict[str, object]],
+    states: dict[str, TeamState],
+    rng: np.random.Generator,
+) -> list[dict[str, object]]:
+    """Tiebreakers 4-7: overall goal difference, overall goals for, Elo, then random."""
+
+    def overall_key(record: dict[str, object]) -> tuple[int, int, float]:
+        return (
+            int(record["goal_difference"]),
+            int(record["goals_for"]),
+            _team_elo(record, states),
+        )
+
+    ordered = sorted(block, key=overall_key, reverse=True)
+    return _shuffle_equal_blocks(ordered, overall_key, rng)
+
+
+def _rank_tied_teams(
+    tied: list[dict[str, object]],
+    group_matches: list[dict[str, object]],
+    states: dict[str, TeamState],
+    rng: np.random.Generator,
+) -> list[dict[str, object]]:
+    """Order teams that are level on overall points using FIFA tiebreakers 1-7."""
+
+    if len(tied) == 1:
+        return list(tied)
+
+    tied_names = {str(record["team"]) for record in tied}
+    head_to_head: dict[str, dict[str, int]] = {
+        name: {"points": 0, "goals_for": 0, "goals_against": 0} for name in tied_names
+    }
+
+    for match in group_matches:
+        home_team = str(match["home_team"])
+        away_team = str(match["away_team"])
+        if home_team not in tied_names or away_team not in tied_names:
+            continue
+        home_goals = int(match["home_goals"])
+        away_goals = int(match["away_goals"])
+
+        head_to_head[home_team]["goals_for"] += home_goals
+        head_to_head[home_team]["goals_against"] += away_goals
+        head_to_head[away_team]["goals_for"] += away_goals
+        head_to_head[away_team]["goals_against"] += home_goals
+
+        if home_goals > away_goals:
+            head_to_head[home_team]["points"] += GROUP_STAGE_POINTS_WIN
+        elif home_goals < away_goals:
+            head_to_head[away_team]["points"] += GROUP_STAGE_POINTS_WIN
+        else:
+            head_to_head[home_team]["points"] += GROUP_STAGE_POINTS_DRAW
+            head_to_head[away_team]["points"] += GROUP_STAGE_POINTS_DRAW
+
+    def h2h_key(record: dict[str, object]) -> tuple[int, int, int]:
+        stats = head_to_head[str(record["team"])]
+        return (stats["points"], stats["goals_for"] - stats["goals_against"], stats["goals_for"])
+
+    ordered = sorted(tied, key=h2h_key, reverse=True)
+
+    result: list[dict[str, object]] = []
+    index = 0
+    while index < len(ordered):
+        tie_end = index + 1
+        while tie_end < len(ordered) and h2h_key(ordered[tie_end]) == h2h_key(ordered[index]):
+            tie_end += 1
+        block = ordered[index:tie_end]
+        if len(block) == 1:
+            result.extend(block)
+        elif len(block) == len(tied):
+            # Head-to-head separated nobody: fall through to overall criteria.
+            result.extend(_resolve_overall_then_random(block, states, rng))
+        else:
+            # A smaller subset is still level: recompute head-to-head among them.
+            result.extend(_rank_tied_teams(block, group_matches, states, rng))
+        index = tie_end
+    return result
+
+
+def _order_group(
+    teams: list[dict[str, object]],
+    group_matches: list[dict[str, object]],
+    states: dict[str, TeamState],
+    rng: np.random.Generator,
+) -> list[dict[str, object]]:
+    """Rank the four teams of a group: overall points first, then tiebreakers 1-7."""
+
+    by_points = sorted(teams, key=lambda record: int(record["points"]), reverse=True)
+
+    result: list[dict[str, object]] = []
+    index = 0
+    while index < len(by_points):
+        tie_end = index + 1
+        while tie_end < len(by_points) and int(by_points[tie_end]["points"]) == int(by_points[index]["points"]):
+            tie_end += 1
+        block = by_points[index:tie_end]
+        if len(block) == 1:
+            result.extend(block)
+        else:
+            result.extend(_rank_tied_teams(block, group_matches, states, rng))
+        index = tie_end
+    return result
+
+
+def rank_group_teams(
+    standings: dict[str, dict[str, object]],
+    group_matches: list[dict[str, object]],
+    states: dict[str, TeamState],
+    rng: np.random.Generator,
+) -> tuple[dict[str, list[str]], list[str]]:
 
     groups: dict[str, list[dict[str, object]]] = defaultdict(list)
     for record in standings.values():
         group = str(record.get("group"))
         groups[group].append(record)
+
+    matches_by_group: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for match in group_matches:
+        matches_by_group[str(match.get("group"))].append(match)
 
     qualifiers: dict[str, list[str]] = {}
     third_place_candidates: list[dict[str, object]] = []
@@ -484,62 +625,17 @@ def rank_group_teams(standings: dict[str, dict[str, object]], rng: np.random.Gen
         if len(teams) != 4:
             raise ValueError(f"Group {group_name} does not contain 4 teams in the simulation")
 
-        decorated = sorted(
-            teams,
-            key=lambda item: (
-                -int(item["points"]),
-                -int(item["goal_difference"]),
-                -int(item["goals_for"]),
-            ),
-        )
+        ordered = _order_group(teams, matches_by_group.get(group_name, []), states, rng)
 
-        index = 0
-        while index < len(decorated):
-            tie_start = index
-            tie_end = index + 1
-            while tie_end < len(decorated) and (
-                decorated[tie_end]["points"] == decorated[tie_start]["points"]
-                and decorated[tie_end]["goal_difference"] == decorated[tie_start]["goal_difference"]
-                and decorated[tie_end]["goals_for"] == decorated[tie_start]["goals_for"]
-            ):
-                tie_end += 1
-            if tie_end - tie_start > 1:
-                tied = decorated[tie_start:tie_end]
-                order = list(range(len(tied)))
-                rng.shuffle(order)
-                tied = [tied[i] for i in order]
-                decorated[tie_start:tie_end] = tied
-            index = tie_end
+        qualifiers[group_name] = [str(ordered[0]["team"]), str(ordered[1]["team"])]
+        third_place_candidates.append(ordered[2])
 
-        qualifiers[group_name] = [str(decorated[0]["team"]), str(decorated[1]["team"])]
-        third_place_candidates.append(decorated[2])
+    # Best third-placed teams: rank by points, then by current Elo (random as last resort).
+    def third_place_key(record: dict[str, object]) -> tuple[int, float]:
+        return (int(record["points"]), _team_elo(record, states))
 
-    third_place_candidates = sorted(
-        third_place_candidates,
-        key=lambda item: (
-            -int(item["points"]),
-            -int(item["goal_difference"]),
-            -int(item["goals_for"]),
-        ),
-    )
-
-    index = 0
-    while index < len(third_place_candidates):
-        tie_start = index
-        tie_end = index + 1
-        while tie_end < len(third_place_candidates) and (
-            third_place_candidates[tie_end]["points"] == third_place_candidates[tie_start]["points"]
-            and third_place_candidates[tie_end]["goal_difference"] == third_place_candidates[tie_start]["goal_difference"]
-            and third_place_candidates[tie_end]["goals_for"] == third_place_candidates[tie_start]["goals_for"]
-        ):
-            tie_end += 1
-        if tie_end - tie_start > 1:
-            tied = third_place_candidates[tie_start:tie_end]
-            order = list(range(len(tied)))
-            rng.shuffle(order)
-            tied = [tied[i] for i in order]
-            third_place_candidates[tie_start:tie_end] = tied
-        index = tie_end
+    third_place_candidates = sorted(third_place_candidates, key=third_place_key, reverse=True)
+    third_place_candidates = _shuffle_equal_blocks(third_place_candidates, third_place_key, rng)
 
     third_place_order = [str(item["team"]) for item in third_place_candidates[:8]]
     return qualifiers, third_place_order
@@ -813,7 +909,7 @@ def simulate_world_cup(
 
     group_fixtures = fixtures[fixtures["stage"].fillna("") == "GROUP"].copy()
     group_standings, group_logs = resolve_group_stage(group_fixtures, states, predictor, rng)
-    qualifiers, third_place_order = rank_group_teams(group_standings, rng)
+    qualifiers, third_place_order = rank_group_teams(group_standings, group_logs, states, rng)
     placeholder_map = resolve_placeholders(qualifiers, third_place_order)
 
     knockout_fixtures = fixtures[fixtures["stage"].fillna("") != "GROUP"].copy()
