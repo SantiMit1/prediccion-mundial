@@ -33,9 +33,9 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-19,GROUP,D,Turkey,Paraguay,0,1,FIFA World Cup,San Francisco,USA,TRUE
 2026-06-20,GROUP,F,Netherlands,Sweden,5,1,FIFA World Cup,Houston,USA,TRUE
 2026-06-20,GROUP,E,Germany,Ivory Coast,2,1,FIFA World Cup,Toronto,Canada,TRUE
-2026-06-20,GROUP,E,Ecuador,Curaçao,,,FIFA World Cup,Kansas City,USA,TRUE
-2026-06-20,GROUP,F,Tunisia,Japan,,,FIFA World Cup,Monterrey,Mexico,TRUE
-2026-06-21,GROUP,H,Spain,Saudi Arabia,,,FIFA World Cup,Atlanta,USA,TRUE
+2026-06-20,GROUP,E,Ecuador,Curaçao,0,0,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-20,GROUP,F,Tunisia,Japan,0,4,FIFA World Cup,Monterrey,Mexico,TRUE
+2026-06-21,GROUP,H,Spain,Saudi Arabia,4,0,FIFA World Cup,Atlanta,USA,TRUE
 2026-06-21,GROUP,G,Belgium,Iran,,,FIFA World Cup,Los Angeles,USA,TRUE
 2026-06-21,GROUP,H,Uruguay,Cape Verde,,,FIFA World Cup,Miami,USA,TRUE
 2026-06-21,GROUP,G,New Zealand,Egypt,,,FIFA World Cup,Vancouver,Canada,TRUE
