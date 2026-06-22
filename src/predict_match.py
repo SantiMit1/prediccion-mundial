@@ -103,14 +103,47 @@ def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]
     return features.reindex(columns=list(feature_columns), fill_value=0)
 
 
+def _swap_home_away(features: pd.DataFrame) -> pd.DataFrame:
+    """Return a copy of features with home/away roles swapped."""
+    swapped = features.copy()
+    rename = {
+        "home_team": "away_team", "away_team": "home_team",
+        "home_elo_before": "away_elo_before", "away_elo_before": "home_elo_before",
+        "home_elo_change_last_5": "away_elo_change_last_5", "away_elo_change_last_5": "home_elo_change_last_5",
+        "home_wins_last_5": "away_wins_last_5", "away_wins_last_5": "home_wins_last_5",
+        "home_goals_for_last_5": "away_goals_for_last_5", "away_goals_for_last_5": "home_goals_for_last_5",
+        "home_goals_against_last_5": "away_goals_against_last_5", "away_goals_against_last_5": "home_goals_against_last_5",
+        "home_attack_strength": "away_attack_strength", "away_attack_strength": "home_attack_strength",
+        "home_defense_strength": "away_defense_strength", "away_defense_strength": "home_defense_strength",
+    }
+    swapped = swapped.rename(columns=rename)
+    if "elo_diff" in swapped.columns:
+        swapped["elo_diff"] = -swapped["elo_diff"]
+    return swapped
+
+
 def predict_goals(features: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
     model, feature_columns = load_artifacts()
+
     prepared_features = preprocess_features(features)
     aligned_features = align_feature_columns(prepared_features, feature_columns)
-
     predictions = model.predict(aligned_features)
     lambda_home = pd.Series(predictions[:, 0], index=features.index, name="lambda_home")
     lambda_away = pd.Series(predictions[:, 1], index=features.index, name="lambda_away")
+
+    # For neutral venues, average with the swapped prediction to remove home/away bias.
+    if "neutral" in features.columns and features["neutral"].astype(bool).any():
+        neutral_mask = features["neutral"].astype(bool)
+        swapped_features = _swap_home_away(features)
+        prepared_swapped = preprocess_features(swapped_features)
+        aligned_swapped = align_feature_columns(prepared_swapped, feature_columns)
+        swapped_preds = model.predict(aligned_swapped)
+        lambda_home_swapped = pd.Series(swapped_preds[:, 1], index=features.index)
+        lambda_away_swapped = pd.Series(swapped_preds[:, 0], index=features.index)
+
+        lambda_home = lambda_home.where(~neutral_mask, (lambda_home + lambda_home_swapped) / 2)
+        lambda_away = lambda_away.where(~neutral_mask, (lambda_away + lambda_away_swapped) / 2)
+
     return lambda_home, lambda_away
 
 
