@@ -13,6 +13,11 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
+try:
+    from src.model_features import align_feature_columns, preprocess_features
+except ImportError:
+    from model_features import align_feature_columns, preprocess_features
+
 
 REQUIRED_COLUMNS = [
     "date",
@@ -41,19 +46,7 @@ REQUIRED_COLUMNS = [
     "away_defense_strength",
 ]
 
-EXCLUDED_COLUMNS = {
-    "date",
-    "city",
-    "country",
-    "home_team",
-    "away_team",
-    "home_score",
-    "away_score",
-}
-
 TARGET_COLUMNS = ["home_score", "away_score"]
-TOURNAMENT_COLUMN = "tournament"
-NEUTRAL_COLUMN = "neutral"
 DRAW_MARGIN = 0.25
 
 
@@ -86,25 +79,6 @@ def split_temporally(df: pd.DataFrame, train_ratio: float = 0.8) -> tuple[pd.Dat
     train_df = df.iloc[:split_index].copy()
     test_df = df.iloc[split_index:].copy()
     return train_df, test_df
-
-
-def preprocess_features(df: pd.DataFrame) -> pd.DataFrame:
-    features = df.copy()
-
-    if NEUTRAL_COLUMN in features.columns:
-        features[NEUTRAL_COLUMN] = features[NEUTRAL_COLUMN].astype(int)
-
-    if TOURNAMENT_COLUMN in features.columns:
-        tournament_dummies = pd.get_dummies(features[TOURNAMENT_COLUMN], prefix=TOURNAMENT_COLUMN, dtype=int)
-        features = pd.concat([features.drop(columns=[TOURNAMENT_COLUMN]), tournament_dummies], axis=1)
-
-    feature_columns = [column for column in features.columns if column not in EXCLUDED_COLUMNS]
-    return features[feature_columns]
-
-
-def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]) -> pd.DataFrame:
-    aligned = features.reindex(columns=list(feature_columns), fill_value=0)
-    return aligned
 
 
 def build_model() -> MultiOutputRegressor:

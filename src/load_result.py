@@ -8,7 +8,6 @@ from typing import Iterable, List, Tuple
 import pandas as pd
 
 from build_dataset import (
-    K_VALUES,
     OUTPUT_COLUMNS,
     REQUIRED_COLUMNS,
     WINDOW_SIZE,
@@ -16,6 +15,13 @@ from build_dataset import (
     expected_score,
     get_k_value,
     normalize_bool,
+)
+from cli_prompts import (
+    prompt_bool,
+    prompt_date,
+    prompt_int,
+    prompt_text,
+    prompt_tournament,
 )
 
 
@@ -61,72 +67,6 @@ class TeamState:
 	goals_against_last_5: int
 	attack_strength: float
 	defense_strength: float
-
-
-def prompt_text(message: str, *, default: str | None = None) -> str:
-	while True:
-		suffix = f" [{default}]" if default is not None else ""
-		value = input(f"{message}{suffix}: ").strip()
-		if value:
-			return value
-		if default is not None:
-			return default
-		print("Este campo es obligatorio.")
-
-
-def prompt_int(message: str) -> int:
-	while True:
-		value = input(f"{message}: ").strip()
-		try:
-			parsed = int(value)
-		except ValueError:
-			print("Ingresá un número entero válido.")
-			continue
-		if parsed < 0:
-			print("El valor debe ser cero o mayor.")
-			continue
-		return parsed
-
-
-def prompt_date(message: str) -> str:
-	while True:
-		value = input(f"{message} [YYYY-MM-DD]: ").strip()
-		try:
-			if value == "":
-				return datetime.today().strftime("%Y-%m-%d") 
-			parsed = datetime.strptime(value, "%Y-%m-%d")
-		except ValueError:
-			print("Usá el formato YYYY-MM-DD.")
-			continue
-		return parsed.strftime("%Y-%m-%d")
-
-
-def prompt_bool(message: str) -> bool:
-	while True:
-		value = input(f"{message} [s/n]: ").strip().lower()
-		if value in {"s", "si", "sí", "y", "yes", "true", "1"}:
-			return True
-		if value in {"n", "no", "false", "0"}:
-			return False
-		print("Respondé con s o n.")
-
-
-def prompt_tournament() -> str:
-	tournaments = list(K_VALUES.keys())
-	print("Torneos disponibles:")
-	for index, tournament in enumerate(tournaments, start=1):
-		print(f"  {index}. {tournament}")
-
-	while True:
-		value = input("Elegí el torneo por número: ").strip()
-		try:
-			selected = int(value)
-		except ValueError:
-			print("Ingresá el número de la opción.")
-			continue
-		if 1 <= selected <= len(tournaments):
-			return tournaments[selected - 1]
-		print("Opción fuera de rango.")
 
 
 def ensure_columns(df: pd.DataFrame, columns: Iterable[str]) -> pd.DataFrame:
@@ -328,7 +268,7 @@ def collect_match_input() -> MatchInput:
 	print("Dejá ciudad y país en Unknown si no querés completarlos.")
 
 	return MatchInput(
-		date=prompt_date("Fecha del partido"),
+		date=prompt_date("Fecha del partido", default_today=True),
 		home_team=prompt_text("Equipo local"),
 		away_team=prompt_text("Equipo visitante"),
 		home_score=prompt_int("Goles del equipo local"),

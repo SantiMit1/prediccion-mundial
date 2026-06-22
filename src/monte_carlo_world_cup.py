@@ -17,16 +17,22 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.build_dataset import (  # noqa: E402
-    DEFAULT_K,
-    HOME_ADVANTAGE,
-    INITIAL_ELO,
     WINDOW_SIZE,
     actual_scores,
     expected_score,
     get_k_value,
     normalize_bool,
 )
-from src.predict_match import predict_goals  # noqa: E402
+from src.model_features import (  # noqa: E402
+    TeamState,
+    align_feature_columns,
+    load_artifacts,
+    make_team_state,
+    preprocess_features,
+    reconstruct_state,
+    team_state_to_feature_row,
+    update_team_histories,
+)
 
 
 try:
@@ -67,26 +73,6 @@ class MatchPrediction:
     winner: str | None = None
 
 
-@dataclass
-class TeamState:
-
-    elo: float = INITIAL_ELO
-    elo_history: Deque[float] = None
-    win_history: Deque[int] = None
-    goals_for_history: Deque[int] = None
-    goals_against_history: Deque[int] = None
-
-    def __post_init__(self) -> None:
-        if self.elo_history is None:
-            self.elo_history = deque(maxlen=WINDOW_SIZE)
-        if self.win_history is None:
-            self.win_history = deque(maxlen=WINDOW_SIZE)
-        if self.goals_for_history is None:
-            self.goals_for_history = deque(maxlen=WINDOW_SIZE)
-        if self.goals_against_history is None:
-            self.goals_against_history = deque(maxlen=WINDOW_SIZE)
-
-
 def load_csv(path: Path) -> pd.DataFrame:
 
     if not path.exists():
@@ -105,148 +91,10 @@ def parse_bool(value: object) -> bool:
     return normalize_bool(value)
 
 
-def make_team_state() -> TeamState:
-    return TeamState()
-
-
-def reconstruct_state(history: pd.DataFrame) -> dict[str, TeamState]:
-
-    states: dict[str, TeamState] = defaultdict(make_team_state)
-
-    if "date" not in history.columns:
-        raise ValueError("results_enriched.csv must contain a date column")
-
-    history = history.copy()
-    history["date"] = pd.to_datetime(history["date"], errors="coerce")
-    history = history.dropna(subset=["date"]).sort_values("date").reset_index(drop=True)
-
-    for row in history.itertuples(index=False):
-        home_team = str(row.home_team)
-        away_team = str(row.away_team)
-        home_score = int(row.home_score)
-        away_score = int(row.away_score)
-        neutral = parse_bool(row.neutral)
-        tournament = row.tournament
-
-        home_state = states[home_team]
-        away_state = states[away_team]
-
-        home_elo_before = float(home_state.elo)
-        away_elo_before = float(away_state.elo)
-
-        expected_home = expected_score(home_elo_before, away_elo_before, neutral)
-        expected_away = 1.0 - expected_home
-        actual_home, actual_away = actual_scores(home_score, away_score)
-        k_factor = get_k_value(tournament)
-
-        home_state.elo = home_elo_before + k_factor * (actual_home - expected_home)
-        away_state.elo = away_elo_before + k_factor * (actual_away - expected_away)
-
-        update_team_histories(home_state, True, home_score, away_score, home_elo_before)
-        update_team_histories(away_state, False, home_score, away_score, away_elo_before)
-
-    return states
-
-
-def team_state_to_feature_row(
-    row: pd.Series,
-    states: dict[str, TeamState],
-) -> pd.DataFrame:
-
-    home_team = str(row["home_team"])
-    away_team = str(row["away_team"])
-
-    if home_team not in states:
-        states[home_team] = make_team_state()
-    if away_team not in states:
-        states[away_team] = make_team_state()
-
-    home_state = states[home_team]
-    away_state = states[away_team]
-
-    feature_row = {
-        "date": row["date"],
-        "home_team": home_team,
-        "away_team": away_team,
-        "tournament": row["tournament"],
-        "city": row.get("city", ""),
-        "country": row.get("country", ""),
-        "neutral": parse_bool(row.get("neutral", True)),
-        "home_elo_before": float(home_state.elo),
-        "away_elo_before": float(away_state.elo),
-        "elo_diff": float(home_state.elo - away_state.elo),
-        "home_elo_change_last_5": compute_elo_change(home_state.elo, home_state.elo_history),
-        "away_elo_change_last_5": compute_elo_change(away_state.elo, away_state.elo_history),
-        "home_wins_last_5": int(sum(home_state.win_history)),
-        "away_wins_last_5": int(sum(away_state.win_history)),
-        "home_goals_for_last_5": int(sum(home_state.goals_for_history)),
-        "home_goals_against_last_5": int(sum(home_state.goals_against_history)),
-        "away_goals_for_last_5": int(sum(away_state.goals_for_history)),
-        "away_goals_against_last_5": int(sum(away_state.goals_against_history)),
-    }
-    return pd.DataFrame([feature_row])
-
-
-def compute_elo_change(current_elo: float, history: Deque[float]) -> float:
-
-    if len(history) < WINDOW_SIZE:
-        return 0.0
-    return current_elo - history[0]
-
-
-def update_team_histories(
-    state: TeamState,
-    team_is_home: bool,
-    home_goals: int,
-    away_goals: int,
-    team_elo_before: float,
-) -> None:
-
-    if team_is_home:
-        goals_for = home_goals
-        goals_against = away_goals
-        wins = int(home_goals > away_goals)
-    else:
-        goals_for = away_goals
-        goals_against = home_goals
-        wins = int(away_goals > home_goals)
-
-    state.elo_history.append(team_elo_before)
-    state.win_history.append(wins)
-    state.goals_for_history.append(goals_for)
-    state.goals_against_history.append(goals_against)
-
-
-def align_feature_columns(features: pd.DataFrame, feature_columns: Sequence[str]) -> pd.DataFrame:
-
-    return features.reindex(columns=list(feature_columns), fill_value=0)
-
-
-def load_model_artifacts() -> tuple[object, list[str]]:
-
-    model_path = PROJECT_ROOT / "models" / "goals_model.pkl"
-    feature_columns_path = PROJECT_ROOT / "models" / "feature_columns.pkl"
-
-    if not model_path.exists():
-        raise FileNotFoundError(f"Missing model artifact: {model_path}")
-    if not feature_columns_path.exists():
-        raise FileNotFoundError(f"Missing feature column artifact: {feature_columns_path}")
-
-    import joblib
-
-    model = joblib.load(model_path)
-    feature_columns = joblib.load(feature_columns_path)
-
-    if not isinstance(feature_columns, list) or not all(isinstance(column, str) for column in feature_columns):
-        raise ValueError("feature_columns.pkl must contain a list of strings")
-
-    return model, feature_columns
-
-
 class GoalPredictor:
 
     def __init__(self) -> None:
-        self.model, self.feature_columns = load_model_artifacts()
+        self.model, self.feature_columns = load_artifacts()
 
     def predict(self, feature_df: pd.DataFrame) -> tuple[float, float]:
 
@@ -256,22 +104,6 @@ class GoalPredictor:
         return float(predictions[0, 0]), float(predictions[0, 1])
 
 
-def preprocess_features(features: pd.DataFrame) -> pd.DataFrame:
-
-    prepared = features.copy()
-
-    if "neutral" in prepared.columns:
-        prepared["neutral"] = prepared["neutral"].astype(int)
-
-    if "tournament" in prepared.columns:
-        tournament_dummies = pd.get_dummies(prepared["tournament"], prefix="tournament", dtype=int)
-        prepared = pd.concat([prepared.drop(columns=["tournament"]), tournament_dummies], axis=1)
-
-    excluded_columns = {"date", "city", "country", "home_team", "away_team", "home_score", "away_score"}
-    feature_columns = [column for column in prepared.columns if column not in excluded_columns]
-    return prepared[feature_columns]
-
-
 def simulate_group_match(
     row: pd.Series,
     states: dict[str, TeamState],
@@ -279,7 +111,16 @@ def simulate_group_match(
     rng: np.random.Generator,
 ) -> tuple[int, int, float, float]:
 
-    feature_df = team_state_to_feature_row(row, states)
+    feature_df = team_state_to_feature_row(
+        str(row["home_team"]),
+        str(row["away_team"]),
+        row["tournament"],
+        parse_bool(row.get("neutral", True)),
+        states,
+        date=row.get("date", ""),
+        city=row.get("city", ""),
+        country=row.get("country", ""),
+    )
     lambda_home, lambda_away = predictor.predict(feature_df)
 
     known_home = row.get("home_score")
@@ -292,7 +133,10 @@ def simulate_group_match(
         away_goals = int(rng.poisson(lambda_away))
 
     update_team_state_after_match(
-        row=row,
+        home_team=str(row["home_team"]),
+        away_team=str(row["away_team"]),
+        neutral=parse_bool(row.get("neutral", True)),
+        tournament=row.get("tournament", "FIFA World Cup"),
         states=states,
         home_goals=home_goals,
         away_goals=away_goals,
@@ -301,16 +145,17 @@ def simulate_group_match(
 
 
 def update_team_state_after_match(
-    row: pd.Series,
+    home_team: str,
+    away_team: str,
+    neutral: bool,
+    tournament: object,
     states: dict[str, TeamState],
     home_goals: int,
     away_goals: int,
 ) -> None:
 
-    home_team = str(row["home_team"])
-    away_team = str(row["away_team"])
-    neutral = parse_bool(row.get("neutral", True))
-    tournament = row.get("tournament", "FIFA World Cup")
+    home_team = str(home_team)
+    away_team = str(away_team)
 
     home_state = states.setdefault(home_team, make_team_state())
     away_state = states.setdefault(away_team, make_team_state())
@@ -343,19 +188,16 @@ def simulate_knockout_match(
     rng: np.random.Generator,
 ) -> tuple[str, str, dict[str, object]]:
 
-    fixture = pd.Series(
-        {
-            "date": date_value,
-            "home_team": home_team,
-            "away_team": away_team,
-            "tournament": tournament,
-            "city": city,
-            "country": country,
-            "neutral": neutral,
-        }
+    feature_df = team_state_to_feature_row(
+        home_team,
+        away_team,
+        tournament,
+        neutral,
+        states,
+        date=date_value,
+        city=city,
+        country=country,
     )
-
-    feature_df = team_state_to_feature_row(fixture, states)
     lambda_home, lambda_away = predictor.predict(feature_df)
 
     home_goals = int(rng.poisson(lambda_home))
@@ -380,7 +222,10 @@ def simulate_knockout_match(
         winner = home_team if home_goals > away_goals else away_team
 
     update_team_state_after_match(
-        row=fixture,
+        home_team=home_team,
+        away_team=away_team,
+        neutral=neutral,
+        tournament=tournament,
         states=states,
         home_goals=home_goals,
         away_goals=away_goals,
