@@ -29,7 +29,7 @@ jobs:
       - name: Build enriched dataset
         run: |
           echo "=== Starting dataset build ==="
-          python src/build_enriched_dataset.py
+          python src/build_dataset.py
           echo "=== Completed dataset build ==="
 
       - name: Configure git
@@ -39,7 +39,7 @@ jobs:
 
       - name: Commit and push results
         run: |
-          git add data/enriched_dataset.csv
+          git add data/results_enriched.csv
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
