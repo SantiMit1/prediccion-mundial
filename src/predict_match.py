@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 from scipy.stats import poisson
 
 try:
@@ -108,8 +109,13 @@ def plot_poisson_distribution(
 
     prob_matrix = np.outer(pmf_home, pmf_away)
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+    prob_home_win = float(np.sum(np.tril(prob_matrix, k=-1)))
+    prob_draw = float(np.sum(np.diag(prob_matrix)))
+    prob_away_win = float(np.sum(np.triu(prob_matrix, k=1)))
 
+    fig, (ax1, ax3, ax2) = plt.subplots(1, 3, figsize=(22, 6))
+
+    # poisson
     width = 0.35
     ax1.bar(goals - width / 2, pmf_home, width, label=f"{home_team} (λ={alpha_home:.2f})", color="steelblue", alpha=0.8)
     ax1.bar(goals + width / 2, pmf_away, width, label=f"{away_team} (λ={alpha_away:.2f})", color="tomato", alpha=0.8)
@@ -121,6 +127,7 @@ def plot_poisson_distribution(
     ax1.legend()
     ax1.grid(axis="y", linestyle="--", alpha=0.5)
 
+    # heatmap
     im = ax2.imshow(prob_matrix, cmap="YlOrRd", origin="upper")
 
     ax2.set_xlabel(f"Goles {away_team}")
@@ -139,9 +146,31 @@ def plot_poisson_distribution(
     cbar = fig.colorbar(im, ax=ax2, fraction=0.046, pad=0.04)
     cbar.set_label("Probabilidad")
 
+    # cake
+    labels = [f"{home_team}\n", "Empate", f"{away_team}\n"]
+    probs  = [prob_home_win, prob_draw, prob_away_win]
+    colors = ["steelblue", "gray", "tomato"]
+
+    bars = ax3.bar(labels, probs, color=colors, alpha=0.85, width=0.5)
+
+    for bar, prob in zip(bars, probs):
+        ax3.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 0.01,
+            f"{prob * 100:.1f}%",
+            ha="center", va="bottom", fontsize=12, fontweight="bold",
+        )
+
+    ax3.set_ylim(0, max(probs) * 1.25)
+    ax3.set_ylabel("Probabilidad")
+    ax3.set_title("Probabilidades 1X2")
+    ax3.grid(axis="y", linestyle="--", alpha=0.5)
+    ax3.set_yticks([])
+
+    manager = plt.get_current_fig_manager()
+    manager.window.state("zoomed")
     plt.tight_layout()
     plt.show()
-
 
 def predict_match_from_prompt() -> None:
 
