@@ -44,7 +44,7 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-22,GROUP,I,Norway,Senegal,3,2,FIFA World Cup,East Rutherford,USA,TRUE
 2026-06-22,GROUP,J,Jordan,Algeria,1,2,FIFA World Cup,San Francisco,USA,TRUE
 2026-06-23,GROUP,K,Portugal,Uzbekistan,5,0,FIFA World Cup,Houston,USA,TRUE
-2026-06-23,GROUP,L,England,Ghana,,,FIFA World Cup,Boston,USA,TRUE
+2026-06-23,GROUP,L,England,Ghana,0,0,FIFA World Cup,Boston,USA,TRUE
 2026-06-23,GROUP,L,Panama,Croatia,,,FIFA World Cup,Toronto,Canada,TRUE
 2026-06-23,GROUP,K,Colombia,DR Congo,,,FIFA World Cup,Guadalajara,Mexico,TRUE
 2026-06-24,GROUP,B,Switzerland,Canada,,,FIFA World Cup,Vancouver,Canada,TRUE
