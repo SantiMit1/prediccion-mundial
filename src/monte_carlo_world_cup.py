@@ -91,13 +91,43 @@ def parse_bool(value: object) -> bool:
     return normalize_bool(value)
 
 
+_HOME_AWAY_RENAME = {
+    "home_team": "away_team", "away_team": "home_team",
+    "home_elo_before": "away_elo_before", "away_elo_before": "home_elo_before",
+    "home_elo_change_last_5": "away_elo_change_last_5", "away_elo_change_last_5": "home_elo_change_last_5",
+    "home_wins_last_5": "away_wins_last_5", "away_wins_last_5": "home_wins_last_5",
+    "home_goals_for_last_5": "away_goals_for_last_5", "away_goals_for_last_5": "home_goals_for_last_5",
+    "home_goals_against_last_5": "away_goals_against_last_5", "away_goals_against_last_5": "home_goals_against_last_5",
+    "home_attack_strength": "away_attack_strength", "away_attack_strength": "home_attack_strength",
+    "home_defense_strength": "away_defense_strength", "away_defense_strength": "home_defense_strength",
+}
+
+
 class GoalPredictor:
 
     def __init__(self) -> None:
         self.model, self.feature_columns = load_artifacts()
 
-    def predict(self, feature_df: pd.DataFrame) -> tuple[float, float]:
+    def predict(self, feature_df: pd.DataFrame, neutral: bool = False) -> tuple[float, float]:
 
+        if not neutral:
+            return self._predict_single(feature_df)
+
+        lambda_home, lambda_away = self._predict_single(feature_df)
+
+        swapped = feature_df.copy()
+        swapped = swapped.rename(columns=_HOME_AWAY_RENAME)
+        if "elo_diff" in swapped.columns:
+            swapped["elo_diff"] = -swapped["elo_diff"]
+
+        lambda_swapped_home, lambda_swapped_away = self._predict_single(swapped)
+
+        return (
+            (lambda_home + lambda_swapped_away) / 2,
+            (lambda_away + lambda_swapped_home) / 2,
+        )
+
+    def _predict_single(self, feature_df: pd.DataFrame) -> tuple[float, float]:
         prepared = preprocess_features(feature_df)
         aligned = align_feature_columns(prepared, self.feature_columns)
         predictions = self.model.predict(aligned)
@@ -111,17 +141,18 @@ def simulate_group_match(
     rng: np.random.Generator,
 ) -> tuple[int, int, float, float]:
 
+    neutral = parse_bool(row.get("neutral", True))
     feature_df = team_state_to_feature_row(
         str(row["home_team"]),
         str(row["away_team"]),
         row["tournament"],
-        parse_bool(row.get("neutral", True)),
+        neutral,
         states,
         date=row.get("date", ""),
         city=row.get("city", ""),
         country=row.get("country", ""),
     )
-    lambda_home, lambda_away = predictor.predict(feature_df)
+    lambda_home, lambda_away = predictor.predict(feature_df, neutral=neutral)
 
     known_home = row.get("home_score")
     known_away = row.get("away_score")
@@ -135,7 +166,7 @@ def simulate_group_match(
     update_team_state_after_match(
         home_team=str(row["home_team"]),
         away_team=str(row["away_team"]),
-        neutral=parse_bool(row.get("neutral", True)),
+        neutral=neutral,
         tournament=row.get("tournament", "FIFA World Cup"),
         states=states,
         home_goals=home_goals,
@@ -198,7 +229,7 @@ def simulate_knockout_match(
         city=city,
         country=country,
     )
-    lambda_home, lambda_away = predictor.predict(feature_df)
+    lambda_home, lambda_away = predictor.predict(feature_df, neutral=neutral)
 
     home_goals = int(rng.poisson(lambda_home))
     away_goals = int(rng.poisson(lambda_away))
