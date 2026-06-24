@@ -50,6 +50,7 @@ GROUP_ORDER = list("ABCDEFGHIJKL")
 
 HISTORICAL_PATH = PROJECT_ROOT / "data" / "results_enriched.csv"
 FIXTURE_PATH = PROJECT_ROOT / "data" / "mundial_2026.csv"
+ANNEX_C_PATH = PROJECT_ROOT / "data" / "annex_c_data.json"
 RESULTS_DIR = PROJECT_ROOT / "results"
 WCSIMS_PATH = RESULTS_DIR / "wcsims.json"
 PROBABILITIES_CSV_PATH = RESULTS_DIR / "world_cup_probabilities.csv"
@@ -78,6 +79,33 @@ def load_csv(path: Path) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Missing file: {path}")
     return pd.read_csv(path)
+
+
+def load_annex_c() -> dict[str, list[str]]:
+    if not ANNEX_C_PATH.exists():
+        raise FileNotFoundError(f"Missing annex C data: {ANNEX_C_PATH}")
+    with ANNEX_C_PATH.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+ANNEX_C_WINNERS = ["A", "B", "D", "E", "G", "I", "K", "L"]
+
+
+def resolve_third_place_matchups(
+    third_place_candidates: list[dict[str, object]],
+    annex_c: dict[str, list[str]],
+) -> dict[str, str]:
+    qualified_groups = sorted(str(c["group"]) for c in third_place_candidates[:8])
+    key = "-".join(qualified_groups)
+    mapping = annex_c.get(key)
+    if mapping is None:
+        raise ValueError(f"No Annex C mapping found for combination: {key}")
+
+    result: dict[str, str] = {}
+    for winner_group, third_group in zip(ANNEX_C_WINNERS, mapping):
+        third_team = next(c for c in third_place_candidates if str(c["group"]) == third_group)
+        result[f"3RD_1{winner_group}"] = str(third_team["team"])
+    return result
 
 
 def normalize_group_value(value: object) -> str | None:
@@ -482,7 +510,7 @@ def rank_group_teams(
     group_matches: list[dict[str, object]],
     states: dict[str, TeamState],
     rng: np.random.Generator,
-) -> tuple[dict[str, list[str]], list[str]]:
+) -> tuple[dict[str, list[str]], list[str], list[dict[str, object]]]:
 
     groups: dict[str, list[dict[str, object]]] = defaultdict(list)
     for record in standings.values():
@@ -514,7 +542,7 @@ def rank_group_teams(
     third_place_candidates = _shuffle_equal_blocks(third_place_candidates, third_place_key, rng)
 
     third_place_order = [str(item["team"]) for item in third_place_candidates[:8]]
-    return qualifiers, third_place_order
+    return qualifiers, third_place_order, third_place_candidates
 
 
 def resolve_placeholders(qualifiers: dict[str, list[str]], third_places: list[str]) -> dict[str, str]:
@@ -785,8 +813,13 @@ def simulate_world_cup(
 
     group_fixtures = fixtures[fixtures["stage"].fillna("") == "GROUP"].copy()
     group_standings, group_logs = resolve_group_stage(group_fixtures, states, predictor, rng)
-    qualifiers, third_place_order = rank_group_teams(group_standings, group_logs, states, rng)
+    qualifiers, third_place_order, third_place_candidates = rank_group_teams(group_standings, group_logs, states, rng)
+
     placeholder_map = resolve_placeholders(qualifiers, third_place_order)
+
+    annex_c = load_annex_c()
+    third_place_matchups = resolve_third_place_matchups(third_place_candidates, annex_c)
+    placeholder_map.update(third_place_matchups)
 
     knockout_fixtures = fixtures[fixtures["stage"].fillna("") != "GROUP"].copy()
     knockout_results, winner_placeholders, loser_placeholders = resolve_knockout_bracket(

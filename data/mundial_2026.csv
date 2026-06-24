@@ -71,22 +71,22 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-27,GROUP,J,Algeria,Austria,,,FIFA World Cup,Kansas City,USA,TRUE
 2026-06-27,GROUP,K,Portugal,Colombia,,,FIFA World Cup,Miami,USA,TRUE
 2026-06-27,GROUP,K,Uzbekistan,DR Congo,,,FIFA World Cup,Houston,USA,TRUE
-2026-06-28,R32,,1A,2B,,,FIFA World Cup,,,TRUE
+2026-06-28,R32,,1A,3RD_1A,,,FIFA World Cup,,,TRUE
+2026-06-28,R32,,1B,3RD_1B,,,FIFA World Cup,,,TRUE
 2026-06-28,R32,,1C,2D,,,FIFA World Cup,,,TRUE
-2026-06-29,R32,,1E,2F,,,FIFA World Cup,,,TRUE
-2026-06-29,R32,,1G,2H,,,FIFA World Cup,,,TRUE
-2026-06-30,R32,,1I,2J,,,FIFA World Cup,,,TRUE
-2026-06-30,R32,,1K,2L,,,FIFA World Cup,,,TRUE
-2026-07-01,R32,,1B,2A,,,FIFA World Cup,,,TRUE
-2026-07-01,R32,,1D,2C,,,FIFA World Cup,,,TRUE
-2026-07-02,R32,,1F,2E,,,FIFA World Cup,,,TRUE
-2026-07-02,R32,,1H,2G,,,FIFA World Cup,,,TRUE
-2026-07-03,R32,,1J,2I,,,FIFA World Cup,,,TRUE
-2026-07-03,R32,,1L,2K,,,FIFA World Cup,,,TRUE
-2026-07-03,R32,,3rd_1,3rd_2,,,FIFA World Cup,,,TRUE
-2026-07-03,R32,,3rd_3,3rd_4,,,FIFA World Cup,,,TRUE
-2026-07-04,R32,,3rd_5,3rd_6,,,FIFA World Cup,,,TRUE
-2026-07-04,R32,,3rd_7,3rd_8,,,FIFA World Cup,,,TRUE
+2026-06-29,R32,,1D,3RD_1D,,,FIFA World Cup,,,TRUE
+2026-06-29,R32,,1E,3RD_1E,,,FIFA World Cup,,,TRUE
+2026-06-29,R32,,1F,2E,,,FIFA World Cup,,,TRUE
+2026-06-30,R32,,1G,3RD_1G,,,FIFA World Cup,,,TRUE
+2026-06-30,R32,,1H,2G,,,FIFA World Cup,,,TRUE
+2026-07-01,R32,,1I,3RD_1I,,,FIFA World Cup,,,TRUE
+2026-07-01,R32,,1J,2I,,,FIFA World Cup,,,TRUE
+2026-07-01,R32,,1K,3RD_1K,,,FIFA World Cup,,,TRUE
+2026-07-02,R32,,1L,3RD_1L,,,FIFA World Cup,,,TRUE
+2026-07-02,R32,,2A,2B,,,FIFA World Cup,,,TRUE
+2026-07-02,R32,,2C,2F,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,2H,2J,,,FIFA World Cup,,,TRUE
+2026-07-03,R32,,2K,2L,,,FIFA World Cup,,,TRUE
 2026-07-05,R16,,W_R32_1,W_R32_2,,,FIFA World Cup,,,TRUE
 2026-07-05,R16,,W_R32_3,W_R32_4,,,FIFA World Cup,,,TRUE
 2026-07-06,R16,,W_R32_5,W_R32_6,,,FIFA World Cup,,,TRUE
