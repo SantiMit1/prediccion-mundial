@@ -3,43 +3,43 @@
     "top_10_champions": [
         {
             "team": "Argentina",
-            "champion_probability": 0.164
-        },
-        {
-            "team": "Spain",
-            "champion_probability": 0.104
+            "champion_probability": 0.167
         },
         {
             "team": "France",
-            "champion_probability": 0.098
+            "champion_probability": 0.116
+        },
+        {
+            "team": "Spain",
+            "champion_probability": 0.1
         },
         {
             "team": "Colombia",
-            "champion_probability": 0.061
+            "champion_probability": 0.079
         },
         {
             "team": "Germany",
-            "champion_probability": 0.056
+            "champion_probability": 0.066
         },
         {
             "team": "Netherlands",
-            "champion_probability": 0.055
+            "champion_probability": 0.06
+        },
+        {
+            "team": "England",
+            "champion_probability": 0.05
+        },
+        {
+            "team": "Portugal",
+            "champion_probability": 0.049
         },
         {
             "team": "Brazil",
             "champion_probability": 0.049
         },
         {
-            "team": "Mexico",
-            "champion_probability": 0.044
-        },
-        {
-            "team": "Morocco",
-            "champion_probability": 0.042
-        },
-        {
-            "team": "Portugal",
-            "champion_probability": 0.041
+            "team": "United States",
+            "champion_probability": 0.036
         }
     ]
 }
