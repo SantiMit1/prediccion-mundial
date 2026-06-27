@@ -91,58 +91,12 @@ La accuracy 1X2 mide qué porcentaje de las veces el modelo acierta el signo del
 
 ---
 
-## 3. Simulación Monte Carlo — `monte_carlo_world_cup.py`
-
-### 3.1 Reconstrucción del estado actual
-
-Antes de simular, `reconstruct_state()` reproduce cronológicamente todos los partidos de `results_enriched.csv` para obtener el Elo, las estadísticas rodantes y las fuerzas Dixon-Coles actuales de cada selección. Este estado es el punto de partida para todas las simulaciones.
-
-### 3.2 Generación de resultados
-
-Para cada partido del fixture `mundial_2026.csv`:
-
-1. Se toman las features actuales de ambos equipos (Elo, ventana rodante, fuerzas Dixon-Coles).
-2. El modelo XGBoost predice `λ_home` y `λ_away`.
-3. Se sortea el resultado: `home_goals ~ Poisson(λ_home)`, `away_goals ~ Poisson(λ_away)`.
-
-En partidos de sede neutral (todos los del Mundial), la predicción se promedia con la predicción intercambiando local y visitante. Esto elimina el sesgo de localía incorporado en el Elo y en el parámetro de ventaja de Dixon-Coles.
-
-### 3.3 Fase de grupos
-
-Los 48 partidos de grupo se simulan y se calculan las posiciones finales de cada grupo (A–L). El criterio de desempate es:
-
-1. Puntos
-2. Diferencia de goles
-3. Goles a favor
-4. Resultado head-to-head entre los equipos empatados
-5. Rating Elo (mayor Elo avanza)
-6. Sorteo aleatorio
-
-Los 4 mejores terceros se seleccionan con los mismos criterios.
-
-### 3.4 Fase eliminatoria
-
-El bracket de 32 equipos está definido en `mundial_2026.csv` con placeholders del tipo `1A` (primer lugar del grupo A), `2B` (segundo del grupo B), `W_R32_1` (ganador del partido de R32 #1), etc. Estos placeholders se resuelven dinámicamente en cada simulación según los resultados de la fase de grupos y del bracket anterior.
-
-Cuando un partido eliminatorio termina empatado tras los 90 minutos, se simula **tiempo extra** reduciendo la tasa de goles a `λ/3` (dos períodos de 15 minutos con menor ritmo de juego). Si persiste el empate, el ganador se define por **penales** (selección aleatoria con probabilidad 50/50, ya que es inherentemente impredecible).
-
-### 3.5 Agregación
-
-Con **1000 simulaciones** completadas:
-
-- `world_cup_probabilities.csv`: para cada selección, la fracción de simulaciones en las que alcanzó cada ronda (R32, R16, QF, SF, final, campeón).
-- `simulation_summary.json`: top 10 de campeones más probables.
-- `wcsims.json`: detalle completo de la primera simulación (posiciones de grupos, resultados del bracket, campeón).
-
----
-
-## 4. Archivos del proyecto
+## 3. Archivos del proyecto
 
 ```
 data/
 ├── results.csv                    # Partidos históricos crudos (~50k)
 ├── results_enriched.csv           # Partidos + features calculadas
-├── mundial_2026.csv               # Fixture del Mundial con placeholders
 └── former_names.csv               # Mapeo de nombres históricos a actuales
 
 src/
@@ -150,7 +104,6 @@ src/
 ├── dixon_coles.py                 # Implementación del modelo Dixon-Coles (MLE)
 ├── model_features.py              # Utilidades compartidas para reconstrucción de estado
 ├── train_goals_model.py           # Entrenamiento y evaluación del XGBoost
-├── monte_carlo_world_cup.py       # Simulador Monte Carlo del mundial
 ├── predict_match.py               # Predicción interactiva de un partido
 ├── load_result.py                 # Carga de un resultado real a los datasets
 └── cli_prompts.py                 # Helpers de input para scripts interactivos
@@ -161,9 +114,4 @@ models/
 ├── metrics.json                   # MAE, RMSE, accuracy 1X2
 ├── best_params.json               # Hiperparámetros óptimos
 └── test_predictions.csv           # Predicciones sobre el test set
-
-results/
-├── world_cup_probabilities.csv    # Probabilidades por equipo y ronda (desde la fecha 2)
-├── simulation_summary.json        # Top 10 campeones
-└── wcsims.json                    # Detalle de la primera simulación
 ```
