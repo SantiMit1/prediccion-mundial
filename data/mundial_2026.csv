@@ -47,22 +47,22 @@ date,stage,group,home_team,away_team,home_score,away_score,tournament,city,count
 2026-06-23,GROUP,L,England,Ghana,0,0,FIFA World Cup,Boston,USA,TRUE
 2026-06-23,GROUP,L,Panama,Croatia,0,1,FIFA World Cup,Toronto,Canada,TRUE
 2026-06-23,GROUP,K,Colombia,DR Congo,1,0,FIFA World Cup,Guadalajara,Mexico,TRUE
-2026-06-24,GROUP,B,Switzerland,Canada,,,FIFA World Cup,Vancouver,Canada,TRUE
-2026-06-24,GROUP,B,Bosnia and Herzegovina,Qatar,,,FIFA World Cup,Seattle,USA,TRUE
-2026-06-24,GROUP,A,South Africa,South Korea,,,FIFA World Cup,Mexico City,Mexico,TRUE
-2026-06-24,GROUP,A,Czech Republic,Mexico,,,FIFA World Cup,Guadalajara,Mexico,TRUE
-2026-06-25,GROUP,D,United States,Turkey,,,FIFA World Cup,Los Angeles,USA,TRUE
-2026-06-25,GROUP,D,Paraguay,Australia,,,FIFA World Cup,San Francisco,USA,TRUE
-2026-06-25,GROUP,C,Morocco,Haiti,,,FIFA World Cup,Boston,USA,TRUE
-2026-06-25,GROUP,C,Scotland,Brazil,,,FIFA World Cup,Miami,USA,TRUE
-2026-06-25,GROUP,E,Germany,Ecuador,,,FIFA World Cup,East Rutherford,USA,TRUE
-2026-06-25,GROUP,E,Ivory Coast,Curaçao,,,FIFA World Cup,Philadelphia,USA,TRUE
-2026-06-26,GROUP,F,Netherlands,Tunisia,,,FIFA World Cup,Kansas City,USA,TRUE
-2026-06-26,GROUP,F,Sweden,Japan,,,FIFA World Cup,Dallas,USA,TRUE
+2026-06-24,GROUP,B,Switzerland,Canada,2,1,FIFA World Cup,Vancouver,Canada,TRUE
+2026-06-24,GROUP,B,Bosnia and Herzegovina,Qatar,3,1,FIFA World Cup,Seattle,USA,TRUE
+2026-06-24,GROUP,A,South Africa,South Korea,1,0,FIFA World Cup,Mexico City,Mexico,TRUE
+2026-06-24,GROUP,A,Czech Republic,Mexico,0,3,FIFA World Cup,Guadalajara,Mexico,TRUE
+2026-06-25,GROUP,D,United States,Turkey,2,3,FIFA World Cup,Los Angeles,USA,TRUE
+2026-06-25,GROUP,D,Paraguay,Australia,0,0,FIFA World Cup,San Francisco,USA,TRUE
+2026-06-25,GROUP,C,Morocco,Haiti,4,2,FIFA World Cup,Boston,USA,TRUE
+2026-06-25,GROUP,C,Scotland,Brazil,0,3,FIFA World Cup,Miami,USA,TRUE
+2026-06-25,GROUP,E,Germany,Ecuador,1,2,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-25,GROUP,E,Ivory Coast,Curaçao,2,0,FIFA World Cup,Philadelphia,USA,TRUE
+2026-06-26,GROUP,F,Netherlands,Tunisia,3,1,FIFA World Cup,Kansas City,USA,TRUE
+2026-06-26,GROUP,F,Sweden,Japan,1,1,FIFA World Cup,Dallas,USA,TRUE
 2026-06-26,GROUP,G,Belgium,New Zealand,,,FIFA World Cup,Vancouver,Canada,TRUE
 2026-06-26,GROUP,G,Egypt,Iran,,,FIFA World Cup,Seattle,USA,TRUE
-2026-06-26,GROUP,I,France,Norway,,,FIFA World Cup,Boston,USA,TRUE
-2026-06-26,GROUP,I,Iraq,Senegal,,,FIFA World Cup,East Rutherford,USA,TRUE
+2026-06-26,GROUP,I,France,Norway,4,1,FIFA World Cup,Boston,USA,TRUE
+2026-06-26,GROUP,I,Iraq,Senegal,0,5,FIFA World Cup,East Rutherford,USA,TRUE
 2026-06-27,GROUP,H,Spain,Uruguay,,,FIFA World Cup,Guadalajara,Mexico,TRUE
 2026-06-27,GROUP,H,Cape Verde,Saudi Arabia,,,FIFA World Cup,Miami,USA,TRUE
 2026-06-27,GROUP,L,England,Panama,,,FIFA World Cup,East Rutherford,USA,TRUE
